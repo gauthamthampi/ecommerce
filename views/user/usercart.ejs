@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.3/dist/sweetalert2.min.css">
+<style>
+/* Add custom CSS for hover effect */
+.img-fluid:hover {
+    transition: box-shadow 0.3s ease-in-out;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+</style>
+</head>
+
+<body style="background-color: #dedcdc; margin: 0; padding: 0;">
+
+  <div class="container-fluid bg-white">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3   border-bottom">
+      <div class="col-md-3 mb-2 mb-md-0 mx-3 my-0">
+        <img src="/static/assets/g-times-high-resolution-logo-transparent.png" style="width: 70px; height: 65px;" class="mx-2">
+        <a href="/homepage" class="d-inline-flex link-body-emphasis text-decoration-none fs-2 fst-italic fst-bold fw-bolder"> G Times
+        </a>
+      </div>
+
+      <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="/mens" class="nav-link px-2 text-success fw-semibold">MEN</a></li>
+        <li><a href="/womens" class="nav-link px-5 text-success  fw-semibold">WOMEN</a></li>
+        <li><a href="/smart" class="nav-link px-2 text-success  fw-semibold">SMART</a></li>
+      </ul>
+
+       <form class="col-12 col-lg-auto mb-lg-0 me-lg-3 text-end" role="search">
+        <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+      </form>  
+      
+      <div class="col-md-3 text-end d-flex align-items-center justify-content-end">
+        <div class="dropdown">
+          <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/login">Login/Signup</a></li>
+            <li><a class="dropdown-item" href="/userprof">My Profile</a></li>
+            <li><a class="dropdown-item" href="/user/vieworder">Your Orders</a></li>
+            <li><a class="dropdown-item" href="/logout" onclick="alert('Logout successfully')">Logout</a></li>
+          </ul>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24"><path d="M20.808,11.079C19.829,16.132,12,20.5,12,20.5s-7.829-4.368-8.808-9.421C2.227,6.1,5.066,3.5,8,3.5a4.444,4.444,0,0,1,4,2,4.444,4.444,0,0,1,4-2C18.934,3.5,21.773,6.1,20.808,11.079Z"/></svg>
+        <a href="/user/user_cart"><svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24"><path d="M8,3V7H21l-2,7H8v2H18a1,1,0,0,1,0,2H7a1,1,0,0,1-1-1V4H4A1,1,0,0,1,4,2H7A1,1,0,0,1,8,3ZM6,20.5A1.5,1.5,0,1,0,7.5,19,1.5,1.5,0,0,0,6,20.5Zm9,0A1.5,1.5,0,1,0,16.5,19,1.5,1.5,0,0,0,15,20.5Z"/></svg></a>
+        <% if (locals.user) { %>
+        <p class="text-primary">Hello <span> <%= user %> </span></p>
+        <% } %>
+      </div>
+    </header>
+  </div>
+
+      <% if (typeof session !== 'undefined' && typeof session.message !== 'undefined') { %>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <%= session.message %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <% delete session.message; %>
+      <% } %>
+
+      <div class="container mt-5 p-3">
+        <div class="row bg-white">
+            <div class="col-9 border-end">
+                <p class="fs-1 text-center" style="font-family: 'Times New Roman', Times, serif;">CART </p>
+                <!-- <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                  <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 75%"></div>
+                </div> -->
+               
+                <% if (itemsWithDetails && itemsWithDetails.length > 0) { %>
+                    <% itemsWithDetails.forEach(product => { %>
+                        <!-- Product Details -->
+                        <div class="row row-cols-2 border rounded-3 mx-3 my-3 p-3" style="background-color: rgb(222, 222, 222);">
+                            <!-- Image -->
+                            <div class="col">
+                                <div class="border rounded-3 p-2" style="width: 200px; height: 200px; object-fit: cover; margin-left: 100px; margin-top: 20px;">
+                                    <img src="/uploads/<%= product.productDetails.image[0] %>" width="100%" height="100%" class="img-fluid" alt="img">
+                                </div>
+                            </div>
+                            <!-- Product Info -->
+                            <div class="col">
+                                <h4><%= product.productDetails.modelname %></h4>
+                                <% if (product.productDetails.offerprice>0) { %>
+                                  <h5 class="my-4" style="color: green;">₹ <%= Number(product.productDetails.offerprice).toLocaleString('en-IN') %> </h5>
+                                <% } else { %>
+                                  <h5 class="my-4" style="color: green;">₹ <%= Number(product.productDetails.price).toLocaleString('en-IN') %> </h5>
+                                  <% } %>
+                               
+                                <h5 class="my-4">Colour: <%= product.productDetails.colour %> </h5>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="input-group">
+                                            <span class="input-group-text">Quantity</span>
+                                            <form method="post" action="/user/user_cart/quantityupdated/<%=product.productDetails._id%>">
+                                                <div class="input-group">
+                                                    <input type="number" step="1" min="1" max="10" value="<%= product.quantity %>" class="form-control quantity-input" name="quantity" oninput="toggleButtonVisibility(this)">
+                                                    <button type="submit" class="btn btn-success confirm-button" style="display: none;">Confirm</button>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <% if (typeof session !== 'undefined' && typeof session.message !== 'undefined') { %>
+                                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                                 <%= session.message %>
+                                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            </div>
+                                            <% delete session.message; %>
+                                           <% } %>
+
+                                        <a href="#" class="delete-product" data-product-id="<%= product.productDetails._id %>">
+                                            <button type="button" class="btn btn-danger mt-3">Remove Product</button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="alert alert-info" role="alert">
+                        Your cart is empty.
+                    </div>
+                <% } %>
+            </div>
+            
+            <% if (  userCart.totalPrice > 0) { %>
+              <div class="col-3 border-start">
+                  <div class="row p-4">
+                      <h4 class="text-center mb-3" style="font-family: 'Times New Roman', Times, serif;">Summary</h4>
+                      <div class="row">
+                          <div class="col">
+                              <h5>Subtotal</h5>
+                          </div>
+                          <div class="col" style="text-align: end;">
+                              <p id="subtotalAmount">₹<%= userCart.totalPrice %>.00</p>
+                          </div>
+                      </div>
+                      <div class="row border-bottom">
+                          <div class="col">
+                              <h5>Shipping </h5>
+                          </div>
+                          <div class="col" style="text-align: end;">
+                              <p id="subtotalAmount">₹ 0.00</p>
+                          </div>
+                      </div>
+                      <div class="row mt-2">
+                          <div class="col">
+                              <h5>Total Price </h5>
+                          </div>
+                          <div class="col" style="text-align: end;">
+                              <p id="subtotalAmount">₹ <%= userCart.totalPrice %>.00</p>
+                          </div>
+                          <a href="/user/cartcheckout/<%= userCart._id %>"><button class="btn btn-primary" style="width: 100%;">Proceed To Checkout</button></a>
+                      </div>
+                  </div>
+                  <div class="row p-3 m-1" style="background-color:rgb(203, 200, 200)">
+                    <p class="border-bottom">Available Coupons</p>
+                    <% if (userCart.coupon==="Not applied") { %>
+                      <form id="couponForm" method="post" action="/cart/selectcoupon/<%= userCart._id %>">
+                      <% coupons.forEach(coupon => { %>
+                          <div class="form-check bg-white my-2">
+                              <input class="form-check-input" type="radio" name="flexRadioDefault" value="<%=coupon.name%>">
+                              <label class="form-check-label">
+                                  <%= coupon.name %>
+                              </label><br>
+                              <label><%= coupon.description %></label>
+                          </div>
+                      <% }); %>
+                      <button type="submit" class="btn btn-success">Apply Coupon</button>
+                    </form>
+                  <% } else if(userCart.coupon==="Applied") { %>
+                   <a href="/removecoupon/<%= userCart._id %>"><button class="btn btn-danger">Remove Coupon</button></a>
+                 <% } else { %>
+                      <p>No coupons available</p>
+                  <% } %>    
+                 
+        </div>
+    </div>
+    <% } %>
+        </div>
+        </div>
+
+    <footer class="container-fluid mt-5 text-white p-5 " style="background-color: rgb(41, 7, 7);">
+        <div class="row">
+          <div class="col-6 col-md-2 mb-3">
+            <h5>Section</h5>
+            <ul class="nav flex-column text-white">
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Home</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Features</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Pricing</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">FAQs</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">About</a></li>
+            </ul>
+          </div>
+    
+          <div class="col-6 col-md-2 mb-3">
+            <h5>Section</h5>
+            <ul class="nav flex-column">
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Home</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Features</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Pricing</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">FAQs</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">About</a></li>
+            </ul>
+          </div>
+    
+          <div class="col-6 col-md-2 mb-3">
+            <h5>Section</h5>
+            <ul class="nav flex-column">
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Home</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Features</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Pricing</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">FAQs</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">About</a></li>
+            </ul>
+          </div>
+    
+          <div class="col-md-5 offset-md-1 mb-3">
+            <form>
+              <h5>Subscribe to our newsletter</h5>
+              <p>Monthly digest of what's new and exciting from us.</p>
+              <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+                <label for="newsletter1" class="visually-hidden">Email address</label>
+                <input id="newsletter1" type="text" class="form-control" placeholder="Email address" fdprocessedid="xn0sb">
+                <button class="btn btn-primary" type="button" fdprocessedid="qtzvz">Subscribe</button>
+              </div>
+            </form>
+          </div>
+        </div>
+    
+        <div class="d-flex flex-column flex-sm-row justify-content-between py-4 border-top">
+          <p>© 2023 Company, Inc. All rights reserved.</p>
+          <ul class="list-unstyled d-flex">
+            <li class="ms-3"><a class="link-body-emphasis" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#twitter"></use></svg></a></li>
+            <li class="ms-3"><a class="link-body-emphasis" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#instagram"></use></svg></a></li>
+            <li class="ms-3"><a class="link-body-emphasis" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#facebook"></use></svg></a></li>
+          </ul>
+        </div>
+      </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.3/dist/sweetalert2.all.min.js"></script>
+    <script>
+        function toggleButtonVisibility(input, productId) {
+            var confirmButton = input.parentNode.querySelector('.confirm-button');
+            var stockMessage = document.getElementById('stockUnavailable_' + productId);
+        
+            if (input.value !== '') {
+                confirmButton.style.display = 'inline-block';  // Show the button
+                stockMessage.style.display = 'none'; // Hide the stock message
+            } else {
+                confirmButton.style.display = 'none';  // Hide the button
+                stockMessage.style.display = 'none'; // Hide the stock message
+            }
+        }
+        
+        // Function to show stock unavailable message
+        function showStockUnavailableMessage(productId) {
+            var stockMessage = document.getElementById('stockUnavailable_' + productId);
+            stockMessage.style.display = 'block'; // Show the stock message
+        }
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteButtons = document.querySelectorAll('.delete-product');
+        
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+        
+                    const productId = this.getAttribute('data-product-id');
+        
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You won\'t be able to revert this!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Redirect to the actual delete URL or perform your delete action here
+                            window.location.href = '/user/user_cart/removepd/' + productId;
+                        }
+                    });
+                });
+            });
+        });
+
+        // // Update the progress bar value
+        // function updateProgressBar(value) {
+        //     $('.progress').attr('aria-valuenow', value);
+        //     $('.progress-bar').css('width', value + '%');
+        // }
+    
+        // updateProgressBar(33);
+
+        
+        document.addEventListener('DOMContentLoaded', function () {
+    // Target the form by its id
+    const couponForm = document.getElementById('couponForm');
+
+    // Attach event listener to form submission
+    couponForm.addEventListener('submit', function (event) {
+        // Show SweetAlert
+        Swal.fire({
+            title: 'Selected coupon applied!',
+            text: 'Description of the selected coupon',
+            icon: 'success',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            // Redirect to cart page or perform further actions if needed
+            window.location.href = '/user/user_cart';
+        });
+    });
+});
+
+
+        </script>
+</body>
+</html>

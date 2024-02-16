@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.3/dist/sweetalert2.min.css">
+</head>
+<body  style="background-color: #dedcdc; margin: 0; padding: 0;">
+    <div class="container-fluid bg-white">
+        <header class="d-flex flex-wrap align-items-center justify-content-between py-3 border-bottom">
+            <div class="col-md-3 mb-2 mb-md-0 mx-3 my-0">
+                <img src="/static/assets/g-times-high-resolution-logo-transparent.png" style="width: 70px; height: 65px;"
+                    class="mx-2">
+                <a href="/homepage" class="d-inline-flex link-body-emphasis text-decoration-none fs-2 fst-italic fst-bold fw-bolder"> G Times
+                </a>
+            </div>
+
+            <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/mens" class="nav-link px-2 text-success fw-semibold">MEN</a></li>
+                <li><a href="/womens" class="nav-link px-5 text-success fw-semibold">WOMEN</a></li>
+                <li><a href="/smart" class="nav-link px-2 text-success fw-semibold">SMART</a></li>
+            </ul>
+
+            <form class="col-12 col-lg-auto mb-lg-0 me-lg-3 text-end" role="search">
+                <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+            </form>
+
+            <div class="col-md-3 text-end d-flex align-items-center justify-content-end">
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+                        </svg>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/login">Login/Signup</a></li>
+                        <li><a class="dropdown-item" href="/userprof">My Profile</a></li>
+                        <li><a class="dropdown-item" href="#">Your Orders</a></li>
+                        <li><a class="dropdown-item" href="/logout" onclick="alert('Logout successfully')">Logout</a></li>
+                    </ul>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24">
+                    <path
+                        d="M20.808,11.079C19.829,16.132,12,20.5,12,20.5s-7.829-4.368-8.808-9.421C2.227,6.1,5.066,3.5,8,3.5a4.444,4.444,0,0,1,4,2,4.444,4.444,0,0,1,4-2C18.934,3.5,21.773,6.1,20.808,11.079Z" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24">
+                    <path
+                        d="M8,3V7H21l-2,7H8v2H18a1,1,0,0,1,0,2H7a1,1,0,0,1-1-1V4H4A1,1,0,0,1,4,2H7A1,1,0,0,1,8,3ZM6,20.5A1.5,1.5,0,1,0,7.5,19,1.5,1.5,0,0,0,6,20.5Zm9,0A1.5,1.5,0,1,0,16.5,19,1.5,1.5,0,0,0,15,20.5Z" />
+                </svg>
+                <% if (locals.user) { %>
+                    <p class="text-primary">Hello <span> <%= user %> </span></p>
+                <% } %>
+            </div>
+        </header>
+    </div>
+
+    <div class="container mt-5 bg-white border rounded-3">
+        <div class="d-flex justify-content-center border-bottom mt-2" style="font-family: Georgia, 'Times New Roman', Times, serif;">
+            <h1>CHECKOUT</h1>
+        </div>
+
+        <!-- <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 75%"></div>
+        </div> -->
+       
+        <div class="row row-cols-1 row-cols-md-2 my-5"><%# main row!!!! %>
+            <div class="col-md-6 mb-4" style="border-right: 1px solid grey;">
+                <!-- address details -->
+                <h2 style="font-family:Georgia, 'Times New Roman', Times, serif;">Address Details</h2>
+                <h5 style="font-family:Georgia, 'Times New Roman', Times, serif;">Select the address</h5>
+
+                <% userData.address.forEach((address, index) => { %>
+                    <div class="row mb-3">
+                        <div class="col-1">
+                            <input class="form-check-input" required type="radio" name="flexRadioDefault" id="flexRadioDefault<%= index %> "
+                                data-bs-toggle="collapse" data-bs-target="#collapse<%= index %>" aria-expanded="false"
+                                aria-controls="collapse<%= index %>">
+                               
+                        </div>
+                        <div class="col-11">
+                            <p>
+                                <strong><%= address.type %></strong><br>
+                                <%= address.houseno %>, <%= address.street %><br>
+                                <%= address.city %>, <%= address.state %><br>
+                                Pincode: <%= address.pincode %>
+                            </p>
+                        </div>
+                    </div>
+                    <% }); %>
+                   
+                  
+
+                <div class="m-4">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal3">
+                    ADD NEW ADDRESS
+                  </button>
+                </div>
+
+                 <%# modal for adding new address %>
+                 <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h1 class="modal-title fs-5" id="exampleModalLabel">Add new address</h1>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <form action="/addaddresscart/<%= cartData._id %>" method="post">
+                            <select class="form-select my-3" aria-label="Default select example" name="type" required>
+                                <option selected>Choose the address type</option>
+                                <option value="Home">Home</option>
+                                <option value="Work">Work</option>
+                                <option value="Other">Other</option>
+                              </select>
+                            <div class="form-group">
+                                <label for="houseno">House Number:</label>
+                                <input type="text" class="form-control" id="houseno" name="houseno" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="street">Street:</label>
+                                <input type="text" class="form-control" id="street" name="street" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="city">City:</label>
+                                <input type="text" class="form-control" id="city" name="city" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="state">State:</label>
+                                <input type="text" class="form-control" id="state" name="state" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="pincode">Pincode:</label>
+                                <input type="number" class="form-control" id="pincode" min="0" minlength="6" name="pincode" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary ">Submit</button>
+                    </form>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="row">
+                    <h2 style="font-family:Georgia, 'Times New Roman', Times, serif;">Payment Details</h2>
+                  <form>
+                    <div class="form-check px-5 py-2">
+                        <input class="form-check-input" type="radio" value="COD" name="flexRadioDefault1" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                          COD
+                        </label>
+                      </div>
+                      <div class="form-check  px-5 py-2">
+                        <input class="form-check-input" type="radio" value="Online Payment" name="flexRadioDefault1" id="flexRadioDefault2" >
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          Online Paymemt
+                        </label><br>
+                       
+                        <button class="btn btn-primary proceed-button" type="button"  style="display: none;">PROCEED TO PAYMENT</button>
+                
+                      </div>
+                    </form>
+                  </div>
+ 
+            </div>
+            <div class="col-md-6">
+                 <%# summary.. %>
+                 <h2 style="font-family:Georgia, 'Times New Roman', Times, serif;">Summary</h2>
+            <div class="row m-4">
+              <div class="col">
+                  <h4>Subtotal</h4>
+              </div>
+              <div class="col" style="text-align: end;">
+                <h4 id="subtotalAmount">₹<%= Number(cartData.totalPrice).toLocaleString('en-IN') %>.00</h4>
+            </div>
+          </div>
+          <div class="row m-4" style="border-bottom: 1px solid grey;" >
+            <div class="col">
+                <h4>Shipping Charge</h4>
+            </div>
+            <div class="col" style="text-align: end;">
+              <h4>₹0.00</h4>
+          </div>
+        </div>
+        <div class="row m-4">
+          <div class="col">
+              <h4>Total Price</h4>
+          </div>
+          <div class="col" style="text-align: end;">
+            <h4 id="totalPriceAmount">₹<%= Number(cartData.totalPrice).toLocaleString('en-IN') %>.00</h4>
+        </div>
+      </div>
+
+      
+      <div class="row m-4">
+         <button class="btn btn-success" type="button" id="confirmOrderButton">CONFIRM ORDER</button>
+       
+    </div>
+    </div>
+    </div>
+   
+
+
+
+      </div>
+       
+      <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery (required for Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.3/dist/sweetalert2.all.min.js"></script>
+    <script>
+     var selectedIndex;
+    
+    
+        // Function to initiate Razorpay payment
+  function initiateRazorpayPayment(order_id, amount) {
+    var options = {
+      key: 'rzp_test_kCNHB9SD15lPWJ', // Replace with your actual Razorpay key
+      amount: amount * 100, // Amount is in paise
+      currency: 'INR',
+      name: 'G Times',
+      description: 'Payment for your order',
+      order_id: order_id,
+      handler: function (response) {
+        // Handle the success callback here
+        console.log('Payment successful:', response);
+
+        // You can perform additional actions here, like confirming the order on your server
+        confirmOrder();
+      },
+      prefill: {
+        name: '<%= user %>',
+        email: '<%= user.email %>',
+      },
+    };
+
+    var rzp = new Razorpay(options);
+    rzp.open();
+  }
+
+        // Function to handle the "PROCEED TO PAYMENT" button click
+        function proceedToPayment() {
+            if (typeof selectedIndex !== 'undefined') {
+                // Make an AJAX request to your server to create a Razorpay order
+                $.ajax({
+                    url: '/create-razorpay-order', // Replace with your server endpoint
+                    method: 'POST',
+                    data: {
+                        selectedAddressIndex: selectedIndex,
+                        totalAmount: <%= cartData.totalPrice %>,
+                    },
+                    success: function (response) {
+                        // Response should contain the Razorpay order details
+                        var order_id = response.id;
+                        console.log(order_id);
+                        var amount = response.amount;
+                        console.log(amount);
+                        console.log("index after"+selectedIndex)
+    
+                        // Initiate Razorpay payment with the order details
+                        initiateRazorpayPayment(order_id, amount);
+                    },
+                    error: function (error) {
+                        // Handle error
+                        console.error('Error creating Razorpay order:', error);
+                        // You can show an error message to the user
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Payment Error',
+                            text: 'There was an error processing your payment. Please try again.',
+                        });
+                    },
+                });
+            } else {
+                // Show an alert if no address is selected
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Please select an address',
+                    text: 'Before proceeding to payment, please select an address.',
+                });
+            }
+        }
+    
+        // Attach the click event to the "PROCEED TO PAYMENT" button
+        $(document).ready(function () {
+            $('.proceed-button').click(proceedToPayment);
+        });
+    
+        
+    
+        $(document).ready(function () {
+    $('input[name="flexRadioDefault"]').change(function () {
+        const index = $(this).attr('id').replace('flexRadioDefault', '');
+        setIndex(index);
+        console.log(setIndex(index))
+    })})
+    
+       
+    $(document).ready(function () {
+        $('input[name="flexRadioDefault1"]').change(function () {
+        // Toggle visibility of buttons based on the selected payment method
+        if ($(this).attr('id') === 'flexRadioDefault1') { // COD selected
+            $('#confirmOrderButton').show();
+            $('.proceed-button').hide();
+        } else if ($(this).attr('id') === 'flexRadioDefault2') { // Online Payment selected
+            $('#confirmOrderButton').hide();
+            $('.proceed-button').show();
+        }
+       
+    });
+})
+
+        function setIndex(index) {
+        selectedIndex = index;
+    }
+    console.log("befor"+selectedIndex)
+    
+    function confirmOrder() {
+        if (typeof selectedIndex !== 'undefined') {
+            // Get the selected payment method
+            var paymentMethod = $('input[name="flexRadioDefault1"]:checked').val();
+            // Check if a payment method is selected
+            if (!paymentMethod) {
+                // Show an alert if no payment method is selected
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Please select a payment method',
+                    text: 'Before confirming the order, please select a payment method.'
+                });
+                return; // Exit the function
+            }
+            // Make an AJAX request to confirm the order
+            $.ajax({
+                url: '/user/orderconfirmation/<%= cartData._id %>?selectedIndex=' + selectedIndex, 
+                method: 'POST',
+                data: {
+                    selectedIndex: selectedIndex,
+                    paymentMethod: paymentMethod // Include the selected payment method in the request body
+                },
+                success: function (response) {
+                var orderId = response.orderId; // Access orderId from the response
+                console.log("resp" + orderId); // Log the orderId
+               Swal.fire({
+               icon: 'success',
+               title: 'Order Placed!',
+               text: 'Thank you for shopping with G Times.',
+               timer: 3000, // Set the timer to 3 seconds
+               showConfirmButton: false
+               }).then(() => {
+              // Redirect to the order confirmation page
+              window.location.href = "/user/orderconfirm/" + orderId;
+              console.log("order done")
+           });
+                },
+                error: function (error) {
+                    // Handle the error response
+                    console.error('Error confirming order:', error);
+                    // Show an error message to the user
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Order Confirmation Error',
+                        text: 'There was an error confirming your order. Please try again later.'
+                    });
+                }
+            });
+        } else {
+            // Show an alert if no address is selected
+            Swal.fire({
+                icon: 'warning',
+                title: 'Please select an address',
+                text: 'Before confirming the order, please select an address.'
+            });
+        }
+    }
+
+    // Attach the click event to the "CONFIRM ORDER" button
+    $(document).ready(function () {
+        $('#confirmOrderButton').click(confirmOrder);
+    });
+    
+    
+        // // Update the progress bar value
+        // function updateProgressBar(value) {
+        //     $('.progress').attr('aria-valuenow', value);
+        //     $('.progress-bar').css('width', value + '%');
+        // }
+    
+        // updateProgressBar(66);
+      
+    </script>
+    
+    
+    
+</body>
+</html>

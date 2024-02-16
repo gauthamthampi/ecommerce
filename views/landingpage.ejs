@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+      /* Add custom CSS for hover effect */
+      .img-fluid:hover {
+          transition: box-shadow 0.3s ease-in-out;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+      .italic {
+  font-style: italic;
+}
+  </style>
+  </head>
+<body style="background-color: #dedcdc; margin: 0; padding: 0;">
+
+
+  <div class="container-fluid bg-white">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3   border-bottom">
+      <div class="col-md-3 mb-2 mb-md-0 mx-3 my-0">
+        <img src="/static/assets/g-times-high-resolution-logo-transparent.png" style="width: 70px; height: 65px;" class="mx-2">
+        <a href="/homepage" class="d-inline-flex link-body-emphasis text-decoration-none fs-2 fst-italic fst-bold fw-bolder"> G Times
+        </a>
+      </div>
+
+      <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="/mens" class="nav-link px-2 text-success fw-semibold">MEN</a></li>
+        <li><a href="/womens" class="nav-link px-5 text-success  fw-semibold">WOMEN</a></li>
+        <li><a href="/smart" class="nav-link px-2 text-success  fw-semibold">SMART</a></li>
+      </ul>
+
+       <form class="col-12 col-lg-auto mb-lg-0 me-lg-3 text-end" role="search">
+        <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+      </form>  
+      
+      <div class="col-md-3 text-end d-flex align-items-center justify-content-end">
+        <div class="dropdown">
+          <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/login">Login/Signup</a></li>
+            <li><a class="dropdown-item" href="/userprof">My Profile</a></li>
+            <li><a class="dropdown-item" href="/user/vieworder">Your Orders</a></li>
+            <% if (locals.user) { %>
+            <li><a class="dropdown-item" href="/logout" onclick="alert('Logout successfully')">Logout</a></li>
+            <% } %>
+          </ul>
+        </div>
+        <% if (locals.user) { %>
+          <a href="/viewwishlist/<%=user._id %>"><svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24"><path d="M20.808,11.079C19.829,16.132,12,20.5,12,20.5s-7.829-4.368-8.808-9.421C2.227,6.1,5.066,3.5,8,3.5a4.444,4.444,0,0,1,4,2,4.444,4.444,0,0,1,4-2C18.934,3.5,21.773,6.1,20.808,11.079Z"/></svg></a>
+        <% } else { %>
+          <a href="/login"><svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24"><path d="M20.808,11.079C19.829,16.132,12,20.5,12,20.5s-7.829-4.368-8.808-9.421C2.227,6.1,5.066,3.5,8,3.5a4.444,4.444,0,0,1,4,2,4.444,4.444,0,0,1,4-2C18.934,3.5,21.773,6.1,20.808,11.079Z"/></svg></a>
+       <% } %>
+        <a href="/user/user_cart"><svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24"><path d="M8,3V7H21l-2,7H8v2H18a1,1,0,0,1,0,2H7a1,1,0,0,1-1-1V4H4A1,1,0,0,1,4,2H7A1,1,0,0,1,8,3ZM6,20.5A1.5,1.5,0,1,0,7.5,19,1.5,1.5,0,0,0,6,20.5Zm9,0A1.5,1.5,0,1,0,16.5,19,1.5,1.5,0,0,0,15,20.5Z"/></svg></a>
+        <% if (locals.user) { %>
+        <p class="text-primary">Hello <span> <%= user.firstname %> </span></p>
+        <% } %>
+      </div>
+    </header>
+  </div>
+
+  <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active" data-bs-interval="3500">
+        <img src="/static/assets/website_seiko_banner.jpg" class="d-block w-100" alt="...">
+      </div>
+      <div class="carousel-item" data-bs-interval="4000">
+        <img src="/static/assets/new_4940x1801.jpg" class="d-block w-100" alt="...">
+      </div>
+      <div class="carousel-item" data-bs-interval="4000">
+        <img src="/static/assets/Banner-hublot-replica-watches-store-1.jpg" class="d-block w-100" alt="...">
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+  <!--<div>
+    <div>
+
+    </div>
+    <div>
+
+    </div>
+    </div>
+    <div>
+
+    </div>
+  </div>-->
+  <div class="container my-5">
+    <div class="row row-cols-1 row-cols-md-3 g-3 justify-content-center">
+      <div class="col">
+        <div class="card h-100 border border-secondary rounded-2 mx-md-3">
+          <div class="card-body d-flex align-items-center justify-content-center">
+            <div class="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+              <!-- Your SVG code here -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="50" height="42" viewBox="0 0 24 24" fill="none">
+                <g clip-path="url(#clip0_429_11102)">
+                <path d="M2 7V5.75C1.30964 5.75 0.75 6.30964 0.75 7H2ZM13 7H14.25C14.25 6.30964 13.6904 5.75 13 5.75V7ZM13 9V7.75C12.6685 7.75 12.3505 7.8817 12.1161 8.11612C11.8817 8.35054 11.75 8.66848 11.75 9L13 9ZM2 8.25H13V5.75H2V8.25ZM11.75 7V19H14.25V7H11.75ZM3.25 17V7H0.75V17H3.25ZM13 10.25H18V7.75H13V10.25ZM20.75 13V17H23.25V13H20.75ZM14.25 19L14.25 9L11.75 9L11.75 19H14.25ZM18.5303 19.5303C18.2374 19.8232 17.7626 19.8232 17.4697 19.5303L15.7019 21.2981C16.9711 22.5673 19.0289 22.5673 20.2981 21.2981L18.5303 19.5303ZM17.4697 18.4697C17.7626 18.1768 18.2374 18.1768 18.5303 18.4697L20.2981 16.7019C19.0289 15.4327 16.9711 15.4327 15.7019 16.7019L17.4697 18.4697ZM6.53033 19.5303C6.23744 19.8232 5.76256 19.8232 5.46967 19.5303L3.7019 21.2981C4.97111 22.5673 7.02889 22.5673 8.2981 21.2981L6.53033 19.5303ZM5.46967 18.4697C5.76256 18.1768 6.23744 18.1768 6.53033 18.4697L8.2981 16.7019C7.02889 15.4327 4.97111 15.4327 3.7019 16.7019L5.46967 18.4697ZM18.5303 18.4697C18.677 18.6164 18.75 18.8061 18.75 19H21.25C21.25 18.1702 20.9325 17.3363 20.2981 16.7019L18.5303 18.4697ZM18.75 19C18.75 19.1939 18.677 19.3836 18.5303 19.5303L20.2981 21.2981C20.9325 20.6637 21.25 19.8298 21.25 19H18.75ZM16 17.75H13V20.25H16V17.75ZM17.4697 19.5303C17.323 19.3836 17.25 19.1939 17.25 19H14.75C14.75 19.8298 15.0675 20.6637 15.7019 21.2981L17.4697 19.5303ZM17.25 19C17.25 18.8061 17.323 18.6164 17.4697 18.4697L15.7019 16.7019C15.0675 17.3363 14.75 18.1702 14.75 19H17.25ZM5.46967 19.5303C5.32298 19.3836 5.25 19.1939 5.25 19H2.75C2.75 19.8298 3.06755 20.6637 3.7019 21.2981L5.46967 19.5303ZM5.25 19C5.25 18.8061 5.32298 18.6164 5.46967 18.4697L3.7019 16.7019C3.06755 17.3363 2.75 18.1702 2.75 19H5.25ZM13 17.75H8V20.25H13V17.75ZM6.53033 18.4697C6.67702 18.6164 6.75 18.8061 6.75 19H9.25C9.25 18.1702 8.93245 17.3363 8.2981 16.7019L6.53033 18.4697ZM6.75 19C6.75 19.1939 6.67702 19.3836 6.53033 19.5303L8.2981 21.2981C8.93245 20.6637 9.25 19.8298 9.25 19H6.75ZM20.75 17C20.75 17.4142 20.4142 17.75 20 17.75V20.25C21.7949 20.25 23.25 18.7949 23.25 17H20.75ZM18 10.25C19.5188 10.25 20.75 11.4812 20.75 13H23.25C23.25 10.1005 20.8995 7.75 18 7.75V10.25ZM0.75 17C0.75 18.7949 2.20507 20.25 4 20.25V17.75C3.58579 17.75 3.25 17.4142 3.25 17H0.75Z" fill="#292929"/>
+                <path d="M3.5 4C3.5 3.44772 3.94772 3 4.5 3V3C6.15685 3 7.5 4.34315 7.5 6V7H6.5C4.84315 7 3.5 5.65685 3.5 4V4Z" stroke="#292929" stroke-width="2.5" stroke-linejoin="round"/>
+                <path d="M11.5 4C11.5 3.44772 11.0523 3 10.5 3V3C8.84315 3 7.5 4.34315 7.5 6V7H8.5C10.1569 7 11.5 5.65685 11.5 4V4Z" stroke="#292929" stroke-width="2.5" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_429_11102">
+                <rect width="24" height="24" fill="white"/>
+                </clipPath>
+                </defs>
+                </svg>
+            </div>
+            <div>
+              <h3 class="fs-2 text-body-emphasis italic">Single Day Delivery</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="col">
+        <div class="card h-100 border border-secondary rounded-2 mx-md-3">
+          <div class="card-body d-flex align-items-center justify-content-center">
+            <div class="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+              <!-- Your SVG code here -->
+              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000" version="1.1" id="Layer_1" width="50" height="42" viewBox="0 0 260 184" xml:space="preserve">
+                <path d="M182.1,134.5c3.7-12.9,8-22.6,18.4-26.9c10.3-4.3,23.2-24.9,29.7-22c6.4,2.9,5.1,10,1.1,15.7c-4,5.7-11.2,13.8-11.2,13.8  l31,8.4c0,0,7.3,2.4,6.9,8.2c-0.4,5.8-17.4,4.8-17.4,4.8s15.8,6.3,14.3,12.4s-19.2,2-19.2,2s13.7,8.9,10,15.1  c-3.6,6.3-19.2-2.1-19.2-2.1s12.8,9.2,8.9,14.6c-3.9,5.4-18.8-4.8-18.8-4.8S172.9,166.8,182.1,134.5z M92.2,1.8  C42.4,1.8,2,42.2,2,92c0,49.8,40.4,90.2,90.2,90.2c49.8,0,90.2-40.4,90.2-90.2C182.5,42.2,142.1,1.8,92.2,1.8z M55.7,61.3  c8.6,0,15.5,6.9,15.5,15.5s-6.9,15.5-15.5,15.5s-15.5-6.9-15.5-15.5S47.2,61.3,55.7,61.3z M92.2,153.8c-21.3,0-40.6-12.6-49.1-32.2  l12.9-5.6c6.2,14.4,20.4,23.7,36.1,23.7c15.7,0,29.9-9.3,36.1-23.7l12.9,5.6C132.8,141.2,113.6,153.8,92.2,153.8z M128.7,92.4  c-8.6,0-15.5-6.9-15.5-15.5s6.9-15.5,15.5-15.5s15.5,6.9,15.5,15.5S137.3,92.4,128.7,92.4z"/>
+                </svg>
+            </div>
+            <div>
+              <h3 class="fs-2 text-body-emphasis italic">Company's Trust</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="col">
+        <div class="card h-100 border border-secondary rounded-2 mx-md-3">
+          <div class="card-body d-flex align-items-center justify-content-center">
+            <div class="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+              <!-- Your SVG code here -->
+              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="42" width="50" version="1.1" id="_x32_" viewBox="0 0 512 512" xml:space="preserve">
+                <style type="text/css">
+                  .st0{fill:#000000;}
+                </style>
+                <g>
+                  <path class="st0" d="M263.621,160.53c-5.626,0-9.207,2.34-10.772,7.19c-0.938,2.806-1.256,5.936-1.256,29.207   c0,23.264,0.318,26.394,1.256,29.199c1.565,4.85,5.146,7.191,10.772,7.191c5.47,0,9.221-2.34,10.786-7.191   c0.93-2.805,1.241-5.935,1.241-29.199c0-23.27-0.31-26.401-1.241-29.207C272.842,162.871,269.091,160.53,263.621,160.53z"/>
+                  <path class="st0" d="M184.39,295.46c-7.282,0-11.97,3.645-13.923,9.757c-1.044,3.123-1.432,7.423-1.432,19.006   c0,11.582,0.388,15.883,1.432,18.998c1.953,6.119,6.641,9.764,13.923,9.764c7.289,0,11.978-3.645,13.93-9.764   c1.043-3.116,1.438-7.416,1.438-18.998c0-11.583-0.395-15.883-1.438-19.006C196.368,299.105,191.679,295.46,184.39,295.46z"/>
+                  <path class="st0" d="M512,255.996l-63.299-51.631l29.002-76.362l-80.641-13.07L384,34.3l-76.361,29.002L256,0.004l-51.638,63.299   L128.007,34.3l-13.07,80.634l-80.633,13.07l28.995,76.362L0,255.996l63.299,51.632l-28.995,76.368l80.633,13.07l13.07,80.633   l76.355-29.002L256,511.996l51.638-63.298L384,477.7l13.063-80.633l80.641-13.07l-29.002-76.368L512,255.996z M150.009,226.6   l16.877-3.278c0.923-0.162,1.55,0.31,1.868,1.255c1.874,4.991,5.618,8.741,12.336,8.741c5.309,0,9.532-2.503,11.097-7.5   c0.93-2.496,1.24-5.464,1.24-10.307c0-5.153-0.31-7.959-1.24-10.462c-1.728-5.315-5.936-7.346-11.097-7.346   c-5.774,0-9.206,2.975-10.771,6.091c-0.466,1.1-0.945,1.565-2.03,1.565h-16.715c-0.938,0-1.565-0.627-1.565-1.565v-58.413   c0-0.93,0.627-1.558,1.565-1.558h59.351c0.937,0,1.565,0.627,1.565,1.558v15.467c0,0.93-0.628,1.558-1.565,1.558h-40.768   c-0.62,0-0.93,0.317-0.93,0.938v20.937h0.465c2.658-2.348,7.967-5.005,15.933-5.005c13.592,0,23.426,6.09,27.331,17.962   c1.402,4.37,2.192,9.213,2.192,18.117c0,6.711-0.944,12.182-2.355,16.56c-4.208,12.964-16.235,19.831-31.392,19.831   c-18.11,0-30.764-9.524-32.64-23.426C148.606,227.537,149.072,226.754,150.009,226.6z M216.67,348.431   c-4.554,14.318-16.785,21.473-32.28,21.473c-15.488,0-27.719-7.155-32.273-21.473c-1.953-6.112-2.475-11.06-2.475-24.208   c0-13.148,0.522-18.096,2.475-24.216c4.554-14.311,16.785-21.473,32.273-21.473c15.495,0,27.726,7.162,32.28,21.473   c1.953,6.119,2.474,11.068,2.474,24.216C219.144,337.37,218.623,342.319,216.67,348.431z M292.933,295.2   c0,0.782-0.522,1.304-1.297,1.304h-38.138c-0.521,0-0.782,0.26-0.782,0.782v18.611c0,0.521,0.261,0.775,0.782,0.775h31.758   c0.776,0,1.297,0.522,1.297,1.297v13.803c0,0.782-0.521,1.304-1.297,1.304h-31.758c-0.521,0-0.782,0.254-0.782,0.775v33.316   c0,0.782-0.521,1.304-1.297,1.304h-16.531c-0.782,0-1.304-0.522-1.304-1.304v-85.9c0-0.775,0.522-1.297,1.304-1.297h56.749   c0.776,0,1.297,0.522,1.297,1.297V295.2z M295.64,230.032c-4.371,13.592-15.312,21.713-32.019,21.713   c-16.708,0-27.641-8.121-32.02-21.713c-1.551-4.681-2.34-9.531-2.34-33.105c0-23.588,0.79-28.431,2.34-33.119   c4.378-13.584,15.312-21.706,32.02-21.706c16.707,0,27.648,8.121,32.019,21.706c1.565,4.688,2.34,9.531,2.34,33.119   C297.98,220.501,297.205,225.352,295.64,230.032z M360.334,181.003h2.474c1.361,0,2.623,0.698,3.37,1.84   c0.733,1.149,0.832,2.594,0.268,3.821l-29.256,63.63c-0.649,1.417-2.066,2.32-3.624,2.32H331.1c-1.361,0-2.629-0.691-3.37-1.84   c-0.732-1.142-0.824-2.587-0.275-3.814l29.256-63.63C357.367,181.912,358.776,181.003,360.334,181.003z M309.852,197.302   c1.72-5.041,6.563-8.284,13.027-8.284c6.472,0,11.322,3.243,13.035,8.284c0.705,2.03,0.917,0.62,0.917,6.986   c0,6.359-0.212,4.956-0.917,6.972c-1.713,5.055-6.563,8.29-13.035,8.29c-6.464,0-11.308-3.236-13.027-8.29   c-0.705-2.016-0.91-0.614-0.91-6.972C308.943,197.922,309.147,199.332,309.852,197.302z M368.117,295.2   c0,0.782-0.521,1.304-1.296,1.304h-38.138c-0.522,0-0.782,0.26-0.782,0.782v18.611c0,0.521,0.26,0.775,0.782,0.775h31.758   c0.775,0,1.297,0.522,1.297,1.297v13.803c0,0.782-0.522,1.304-1.297,1.304h-31.758c-0.522,0-0.782,0.254-0.782,0.775v33.316   c0,0.782-0.515,1.304-1.298,1.304H310.07c-0.782,0-1.304-0.522-1.304-1.304v-85.9c0-0.775,0.521-1.297,1.304-1.297h56.75   c0.775,0,1.296,0.522,1.296,1.297V295.2z M384.05,236.3c-1.713,5.055-6.571,8.297-13.035,8.297c-6.472,0-11.315-3.242-13.035-8.297   c-0.698-2.009-0.909-0.606-0.909-6.972c0-6.365,0.211-4.949,0.909-6.979c1.72-5.04,6.563-8.276,13.035-8.276   c6.464,0,11.322,3.236,13.035,8.276c0.704,2.03,0.91,0.614,0.91,6.979C384.959,235.693,384.754,234.291,384.05,236.3z"/>
+                  <path class="st0" d="M319.348,209.244c0.508,1.515,1.818,2.319,3.532,2.319c1.727,0,3.032-0.804,3.539-2.319   c0.31-0.811,0.402,1.198,0.402-4.956c0-6.168-0.092-4.159-0.402-4.956c-0.508-1.523-1.812-2.333-3.539-2.333   c-1.713,0-3.024,0.81-3.532,2.333c-0.303,0.797-0.402-1.213-0.402,4.956C318.946,210.442,319.045,208.433,319.348,209.244z"/>
+                  <path class="st0" d="M374.547,224.378c-0.501-1.53-1.812-2.333-3.532-2.333c-1.72,0-3.031,0.803-3.538,2.333   c-0.303,0.804-0.395-1.219-0.395,4.949c0,6.162,0.092,4.152,0.395,4.963c0.507,1.509,1.818,2.319,3.538,2.319   c1.72,0,3.031-0.81,3.532-2.319c0.31-0.811,0.408,1.198,0.408-4.963C374.955,223.159,374.856,225.183,374.547,224.378z"/>
+                </g>
+                </svg>
+            </div>
+            <div>
+              <h3 class="fs-2 text-body-emphasis  italic">Earn Discounts</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-md-6 mx-5">
+    <div class="row column-gap-5">
+      <div class="col"> <%#  style="width: 300px; height: 300px;">%>
+        <img src="/static/assets/Skeleton_Banner.png" class=" rounded-3 img-fluid" style="object-fit: cover;" alt="img1">
+      </div>
+      <div class="col justify-content-end"> 
+        <img src="/static/assets/Perpetual_calendar_banner.png"  class=" rounded-3 img-fluid" style="object-fit: cover;" alt="img2">
+      </div>
+    </div>
+  </div>
+
+  <div class="container-md-6 my-5 mx-3">
+   <div class="row"> 
+    <img src="/static/assets/25milus_banner_home_page_website.png" class="rounded-3 img-fluid" style="object-fit: cover;" alt="img">
+    </div>
+   </div>
+  </div>
+
+  <div class="container-md-6 mx-3 my-3">
+    <h4 class="fw-semibold">TOP LOVED WATCHES</h4>
+  </div>
+
+  <div id="carouselExampleInterval" class="carousel slide mx-5 my-3" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active" data-bs-interval="3500">
+        <img src="/static/assets/banner-flare-red-pc.avif" class="d-block w-100" alt="...">
+      </div>
+      <div class="carousel-item" data-bs-interval="4000">
+        <img src="/static/assets/banner-peach-blossom-series-pc.avif" class="d-block w-100" alt="...">
+      </div>
+      <div class="carousel-item" data-bs-interval="4000">
+        <img src="/static/assets/banner-adventurersstone-pc.avif" class="d-block w-100" alt="...">
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+  
+  <div class="container-md-6 mx-5 my-3 mt-5">
+    <div class="row column-gap-5">
+      <div class="col"> <%#  style="width: 300px; height: 300px;">%>
+        <img src="/static/assets/MOBILE_.jpeg" class=" rounded-3 img-fluid" style="object-fit: cover;" alt="img1">
+      </div>
+      <div class="col justify-content-end"> 
+        <img src="/static/assets/MOBILE607200.jpeg"  class=" rounded-3 img-fluid" style="object-fit: cover;" alt="img2">
+      </div>
+    </div>
+  </div>
+
+  <div class="container-md-6 my-5 mx-3">
+   <div class="row"> 
+    <img src="/static/assets/18loveEarthC.jpg" class="rounded-3 img-fluid" style="object-fit: cover;" alt="img">
+    </div>
+   </div>
+  </div>
+  
+  
+
+ 
+    <footer class="container-fluid mt-5 text-white p-5 " style="background-color: rgb(41, 7, 7);">
+      <div class="row">
+        <div class="col-6 col-md-2 mb-3">
+          <h5>Section</h5>
+          <ul class="nav flex-column text-white">
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Home</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Features</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Pricing</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">FAQs</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0">About</a></li>
+          </ul>
+        </div>
+  
+        <div class="col-6 col-md-2 mb-3">
+          <h5>Section</h5>
+          <ul class="nav flex-column">
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Home</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Features</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Pricing</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">FAQs</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">About</a></li>
+          </ul>
+        </div>
+  
+        <div class="col-6 col-md-2 mb-3">
+          <h5>Section</h5>
+          <ul class="nav flex-column">
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Home</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Features</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Pricing</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">FAQs</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">About</a></li>
+          </ul>
+        </div>
+  
+        <div class="col-md-5 offset-md-1 mb-3">
+          <form>
+            <h5>Subscribe to our newsletter</h5>
+            <p>Monthly digest of what's new and exciting from us.</p>
+            <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+              <label for="newsletter1" class="visually-hidden">Email address</label>
+              <input id="newsletter1" type="text" class="form-control" placeholder="Email address" fdprocessedid="xn0sb">
+              <button class="btn btn-primary" type="button" fdprocessedid="qtzvz">Subscribe</button>
+            </div>
+          </form>
+        </div>
+      </div>
+  
+      <div class="d-flex flex-column flex-sm-row justify-content-between py-4 border-top">
+        <p>© 2023 Company, Inc. All rights reserved.</p>
+        <ul class="list-unstyled d-flex">
+          <li class="ms-3"><a class="link-body-emphasis" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#twitter"></use></svg></a></li>
+          <li class="ms-3"><a class="link-body-emphasis" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#instagram"></use></svg></a></li>
+          <li class="ms-3"><a class="link-body-emphasis" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#facebook"></use></svg></a></li>
+        </ul>
+      </div>
+    </footer>
+  
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+ </html>
+  

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body style="background-color: #dedcdc; margin: 0; padding: 0;">
+
+    <div class="container-fluid bg-white">
+        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3   border-bottom">
+          <div class="col-md-3 mb-2 mb-md-0 mx-3 my-0">
+            <img src="/static/assets/g-times-high-resolution-logo-transparent.png" style="width: 70px; height: 65px;" class="mx-2">
+            <a href="/homepage" class="d-inline-flex link-body-emphasis text-decoration-none fs-2 fst-italic fst-bold fw-bolder"> G Times
+            </a>
+          </div>
+    
+          <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+            <li><a href="/mens" class="nav-link px-2 text-success fw-semibold">MEN</a></li>
+            <li><a href="/womens" class="nav-link px-5 text-success  fw-semibold">WOMEN</a></li>
+            <li><a href="/smart" class="nav-link px-2 text-success  fw-semibold">SMART</a></li>
+          </ul>
+    
+           <form class="col-12 col-lg-auto mb-lg-0 me-lg-3 text-end" role="search">
+            <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+          </form>  
+          
+          <div class="col-md-3 text-end d-flex align-items-center justify-content-end">
+            <div class="dropdown">
+              <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/login">Login/Signup</a></li>
+                <li><a class="dropdown-item" href="/userprof">My Profile</a></li>
+                <li><a class="dropdown-item" href="#">Your Orders</a></li>
+                <li><a class="dropdown-item" href="#">Edit Details</a></li>
+                <li><a class="dropdown-item" href="/logout" onclick="alert('Logout successfully')">Logout</a></li>
+              </ul>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24"><path d="M20.808,11.079C19.829,16.132,12,20.5,12,20.5s-7.829-4.368-8.808-9.421C2.227,6.1,5.066,3.5,8,3.5a4.444,4.444,0,0,1,4,2,4.444,4.444,0,0,1,4-2C18.934,3.5,21.773,6.1,20.808,11.079Z"/></svg>
+            <a href="/user/user_cart"><svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24"><path d="M8,3V7H21l-2,7H8v2H18a1,1,0,0,1,0,2H7a1,1,0,0,1-1-1V4H4A1,1,0,0,1,4,2H7A1,1,0,0,1,8,3ZM6,20.5A1.5,1.5,0,1,0,7.5,19,1.5,1.5,0,0,0,6,20.5Zm9,0A1.5,1.5,0,1,0,16.5,19,1.5,1.5,0,0,0,15,20.5Z"/></svg></a>
+            <% if (locals.user) { %>
+            <p class="text-primary">Hello <span> <%= user %> </span></p>
+            <% } %>
+          </div>
+        </header>
+        <div class="container">
+        <h1 class="mb-4 display-5 fst-italic fw-light">Your Orders</h1>
+
+
+        <% detailedOrders.forEach(order => { %>
+          <% let allCancelled = true; %>
+          <% let allDelivered = true; %>
+          <% order.items.forEach(item => { %>
+              <% if (item.prostatus !== 'Cancelled') { %>
+                  <% allCancelled = false; %>
+              <% } %>
+              <% if (item.prostatus !== 'Delivered') { %>
+                  <% allDelivered = false; %>
+              <% } %>
+          <% }); %>
+      
+          <% if (allCancelled) { %>
+            <% order.orderStatus = 'Cancelled'; %>
+            <% order.items.forEach(item => { %>
+                <% item.prostatus = 'Cancelled'; %>
+            <% }); %>
+        <% } else if (allDelivered) { %>
+            <% order.orderStatus = 'Delivered'; %>
+        <% } %>
+      
+            <div class="order-container mb-4 p-4 border rounded">
+                <h2>Order Details</h2>
+                <p>
+                    <strong>Status:</strong>
+                    <% if (order.orderStatus === 'Confirmed') { %>
+                        <span style="color: blue;"><%= order.orderStatus %></span>
+                    <% } else if (order.orderStatus === 'Cancelled') { %>
+                        <span style="color: red;"><%= order.orderStatus %></span>
+                    <% } else if (order.orderStatus === 'Delivered') { %>
+                        <span style="color: green;"><%= order.orderStatus %></span>
+                    <% } else { %>
+                        <%= order.orderStatus %>
+                    <% } %>
+                </p>
+                <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
+                <p><strong>Date of Order:</strong> <%= order.dateoforder %></p>
+                <p><strong>Coupon:</strong> <%= order.coupon !== undefined && order.coupon !== "" ? order.coupon : "No coupon applied" %></p>
+                <%= console.log("coupon"+order.coupon) %>
+
+
+                <h3 class="mt-3">Shipping Address</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>House No</th>
+                            <th>Street</th>
+                            <th>City</th>
+                            <th>State</th>
+                            <th>Pincode</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% order.address.forEach(address => { %>
+                            <tr>
+                                <td><%= address.houseno %></td>
+                                <td><%= address.street %></td>
+                                <td><%= address.city %></td>
+                                <td><%= address.state %></td>
+                                <td><%= address.pincode %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+        
+                <h3 class="mt-3">Order Items</h3>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Image</th>
+                                <th>Colour</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% order.items.forEach(item => { %>
+                                <tr>
+                                    <td><%= item.productName %></td>
+                                    <td><img src="/uploads/<%= item.image %>" alt="<%= item.productName %>" style="max-width: 50px;"></td>
+                                    <td><%= item.colour %></td>
+                                    <td><%= item.quantity %></td>
+                                    <td><%= item.prostatus %></td>
+                                    <td>₹<%= item.price.toLocaleString('en-IN') %>.00</td>
+                                    <% if (item.prostatus !== 'Cancelled' && item.prostatus !== 'Delivered' && order.orderStatus !== 'Cancelled' && order.orderStatus !== 'Delivered') { %>
+                                      <td>
+                                        <form id="cancelProductForm_<%= item.productId %>" method="post" action="/user/orders/cancel-singleproduct/<%= item.productId %>/<%= order.id %>">
+                                            <button type="button" class="btn btn-danger cancel-product-btn" data-product-id="<%= item.productId %>" data-order-id="<%= order.id %>">Cancel Product</button>                                       
+                                        </form>
+                                      </td>
+                                    <% } %>
+                                  </tr>
+                                  <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12 text-end">
+                        <strong>Total Price: ₹<%= order.totalPrice.toLocaleString('en-IN') %></strong>
+                    </div>
+                </div>
+                <% if (order.items.some(item => item.prostatus !== 'Cancelled')) { %>
+                  <div class="row mt-3">
+                    <div class="col-md-12 text-end">
+                      <form id="cancelOrderForm_<%= order.id %>" method="post" action="/user/vieworder/<%= order.id%>">
+                        <% if (order.orderStatus !== 'Cancelled' && order.orderStatus !== 'Delivered') { %>
+                          <button type="button" class="btn btn-danger cancel-order-btn" data-order-id="<%= order.id %>">Cancel Order</button>
+                        <% } %>
+                      </form>
+                    </div>
+                  </div>
+                <% } %>
+
+            </div>
+        <% }); %>
+    </div>
+
+    <footer class="container-fluid text-white p-5 " style="background-color: rgb(41, 7, 7);">
+        <div class="row">
+          <div class="col-6 col-md-2 mb-3">
+            <h5>Section</h5>
+            <ul class="nav flex-column text-white">
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Home</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Features</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Pricing</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">FAQs</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">About</a></li>
+            </ul>
+          </div>
+    
+          <div class="col-6 col-md-2 mb-3">
+            <h5>Section</h5>
+            <ul class="nav flex-column">
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Home</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Features</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Pricing</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">FAQs</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">About</a></li>
+            </ul>
+          </div>
+    
+          <div class="col-6 col-md-2 mb-3">
+            <h5>Section</h5>
+            <ul class="nav flex-column">
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Home</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Features</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">Pricing</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">FAQs</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 ">About</a></li>
+            </ul>
+          </div>
+    
+          <div class="col-md-5 offset-md-1 mb-3">
+            <form>
+              <h5>Subscribe to our newsletter</h5>
+              <p>Monthly digest of what's new and exciting from us.</p>
+              <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+                <label for="newsletter1" class="visually-hidden">Email address</label>
+                <input id="newsletter1" type="text" class="form-control" placeholder="Email address" fdprocessedid="xn0sb">
+                <button class="btn btn-primary" type="button" fdprocessedid="qtzvz">Subscribe</button>
+              </div>
+            </form>
+          </div>
+        </div>
+    
+        <div class="d-flex flex-column flex-sm-row justify-content-between py-4 border-top">
+          <p>© 2023 Company, Inc. All rights reserved.</p>
+          <ul class="list-unstyled d-flex">
+            <li class="ms-3"><a class="link-body-emphasis" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#twitter"></use></svg></a></li>
+            <li class="ms-3"><a class="link-body-emphasis" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#instagram"></use></svg></a></li>
+            <li class="ms-3"><a class="link-body-emphasis" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#facebook"></use></svg></a></li>
+          </ul>
+        </div>
+      </footer>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>  
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script> 
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+    // Add event listener to all cancel order buttons
+    const cancelOrderButtons = document.querySelectorAll('.cancel-order-btn');
+    cancelOrderButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const orderId = this.getAttribute('data-order-id');
+        confirmCancelOrder(orderId);
+      });
+    });
+
+    function confirmCancelOrder(orderId) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'Once canceled, you will not be able to recover this order!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, cancel it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Manually submit the form
+          document.getElementById(`cancelOrderForm_${orderId}`).submit();
+        }
+      });
+    }
+  });
+      
+  document.addEventListener("DOMContentLoaded", function() {
+    // Add event listener to all cancel product buttons
+    const cancelProductButtons = document.querySelectorAll('.cancel-product-btn');
+    cancelProductButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const productId = this.getAttribute('data-product-id');
+        const orderId = this.getAttribute('data-order-id');
+        confirmCancelProduct(productId, orderId);
+      });
+    });
+
+    function confirmCancelProduct(productId, orderId) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'Once canceled, you will not be able to recover this product from the order!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, cancel it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Manually submit the form
+          document.getElementById(`cancelProductForm_${productId}`).submit();
+        }
+      });
+    }
+  });
+    </script> 
+</body>
+</html>

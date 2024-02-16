@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.css" integrity="sha512-bs9fAcCAeaDfA4A+NiShWR886eClUcBtqhipoY5DM60Y1V3BbVQlabthUBal5bq8Z8nnxxiyb1wfGX2n76N1Mw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Add product</title>
+   
+</head>
+<body>
+  
+    <div class="d-flex justify-content-end ">
+        <div class="float-end">
+         <a href="/homepage" class="d-inline-flex link-body-emphasis text-decoration-none fs-2 fst-italic fst-bold fw-bolder"> G Times
+         </a>
+         <img src="/static/assets/g-times-high-resolution-logo-transparent.png" style="width: 70px; height: 65px;" class="mx-2 img-fluid">
+        </div>
+     </div>
+    
+     <div class="d-flex justify-content-center" style="margin-top: 10px;">
+        <h1>ADD PRODUCTS</h1>
+    </div>
+  
+   <form action="/addproducts" method="POST" enctype="multipart/form-data">
+    <div class="container d-flex justify-content-center" style="margin-top: 30px;">
+    <div class="row justify-content-center">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="floatingInput" name="modelname" required>
+            <label for="floatingInput">Model Name</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="floatingPassword" name="brand" required> 
+            <label for="floatingInput">Brand</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="floatingPassword" name="description" required>
+            <label for="floatingInput">Description</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="number" class="form-control" id="floatingPassword" name="rating" required>
+            <label for="floatingInput">Rating</label>
+          </div>
+          <div class="form-floating  mb-3">
+            <select class="form-select" id="floatingSelect" aria-label="Floating label select example" name="category" required>
+              <option value="Men">Men</option>
+              <option value="Women">Women</option>
+              <option value="Smart">Smart</option>
+            </select>
+            <label for="floatingSelect">Choose the category</label>
+          </div>
+          <div class="form-floating  mb-3">
+            <select class="form-select" id="floatingSelect" aria-label="Floating label select example" name="colour" required>
+              <option value="Black">Black</option>
+              <option value="Blue">Blue</option>
+              <option value="White">White</option>
+              <option value="Brown">Brown</option>
+              <option value="Gold">Gold</option>
+              <option value="Silver">Silver</option>
+            </select>
+            <label for="floatingSelect">Choose the colour</label>
+          </div>
+          <div class="form-floating mb-3">
+            <select class="form-select" id="floatingSelect" aria-label="Floating label select example" name="dialshape" required>
+              <option value="Round">Round</option>
+              <option value="Square">Square</option>
+              <option value="Rectangle">Rectangle</option>
+            </select>
+            <label for="floatingSelect">Choose the Dial shape</label>
+          </div>
+          <div class="form-floating mb-3">
+            <select class="form-select" id="floatingSelect" aria-label="Floating label select example" name="strapmaterial" required>
+              <option value="Leather">Leather</option>
+              <option value="Stainless Steel">Stainless Steel</option>
+              <option value="Silicone">Silicone</option>
+              <option value="Rubber">Rubber</option>
+              <option value="Ceramic">Ceramic</option>
+            </select>
+            <label for="floatingSelect">Choose the Strap material</label>
+          </div>
+          <div class="mb-3">
+            <label for="formFileMultiple" class="form-label">Upload images</label>
+            <input class="form-control" type="file" accept="image/*" multiple name="image" id="imageInput" required>
+          </div>
+          
+          <!-- Add the style attribute to set the max-width and max-height of the preview container -->
+<div id="imagePreviewContainer" class="mb-3" style="max-width: 300px; max-height: 300px; overflow: hidden;">
+    <img id="croppedImage">
+</div>
+
+          
+        
+
+          <div class="form-floating mb-3">
+            <input type="number" class="form-control" id="floatingPassword" name="price" required>
+            <label for="floatingInput">Price</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="number" class="form-control" id="floatingPassword" name="stock" required>
+            <label for="floatingInput">Stock Available</label>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: min-content;">Submit</button>
+
+          
+    </div>
+    </div>
+</form>
+<div class="switch d-flex justify-content-center"><a href="/adminlog">Back to home</a></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js" integrity="sha512-9KkIqdfN7ipEW6B6k+Aq20PV31bjODg4AA52W+tYtAE0jE0kMx49bjJ3FgvS56wzmyfMUHbQ4Km2b7l9+Y/+Eg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script>
+        // Wait for the DOM to be ready
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get the input element
+            var input = document.getElementById('imageInput');
+            // Get the image element
+            var image = document.getElementById('croppedImage');
+            // Create a Cropper instance
+            var cropper;
+    
+            // Add an event listener to the input element
+            input.addEventListener('change', function (e) {
+                // Get the selected file
+                var file = e.target.files[0];
+    
+                // Check if a file is selected
+                if (file) {
+                    // Create a FileReader to read the file
+                    var reader = new FileReader();
+    
+                    // Set up the FileReader to run when the file is loaded
+                    reader.onload = function (e) {
+                        // Destroy the previous Cropper instance (if exists)
+                        if (cropper) {
+                            cropper.destroy();
+                        }
+    
+                        // Set the image source with the file data
+                        image.src = e.target.result;
+    
+                        // Create a new Cropper instance on the image element
+                        cropper = new Cropper(image, {
+                            aspectRatio: 1, // You can set the aspect ratio as per your requirement
+                            viewMode: 2, // This option allows you to restrict the crop box to always fit within the container.
+                        });
+                    };
+    
+                    // Read the file as a data URL
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+  
+   
+  
+  
+  
+</body>
+</html>
