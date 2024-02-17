@@ -48,6 +48,10 @@ app.use((err, req, res, next) => {
     res.status(500).render('err', { error: 'An unexpected error occurred.' });
   });
 
+  app.get('*', (req, res) => {
+    res.redirect('/error');
+  });
+
 
 app.listen(process.env.port)
 console.log(`Server deployed at http://localhost:${process.env.port}/homepage`);

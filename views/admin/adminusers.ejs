@@ -27,12 +27,6 @@
                 <span class="fs-3 d-none d-sm-inline border-bottom">ADMIN PANEL</span>
             </a>
             <ul class="nav nav-pills flex-column mt-4">
-                <li class="nav-item align-items-center">
-                    <a href="adminhome" class="nav-link text-white">
-                       <svg  xmlns="http://www.w3.org/2000/svg" height="35" width="30" viewBox="0 5 32.236 32" id="House" ><path d="M1.656 17.756 16 5.324l14.344 12.432a1.001 1.001 0 0 0 1.312-1.512l-15-13a1 1 0 0 0-1.31 0L10 7.876V6a2 2 0 0 0-4 0v5.342L.344 16.244a1.003 1.003 0 0 0-.1 1.412c.364.416.994.462 1.412.1zM12 22h8v10h6a2 2 0 0 0 2-2v-9.802c0-.6-.268-1.166-.732-1.546l-10-8.198a1.996 1.996 0 0 0-2.536 0l-10 8.198A1.993 1.993 0 0 0 4 20.198V30a2 2 0 0 0 2 2h6V22z" fill="#ffffff" class="color000000 svgShape"/></svg><span class="fs-5 ms-3 d-none d-sm-inline">
-                            HOME</span>
-                    </a>
-                </li>
                 <li class="nav-item">
                     <a href="/admindashboard" class="nav-link text-white">
                         <svg xmlns="http://www.w3.org/2000/svg"  height="50" width="30" viewBox="0 15 1798 1792" id="Dashboard"><path d="M384 1152q0-53-37.5-90.5T256 1024t-90.5 37.5T128 1152t37.5 90.5T256 1280t90.5-37.5T384 1152zm192-448q0-53-37.5-90.5T448 576t-90.5 37.5T320 704t37.5 90.5T448 832t90.5-37.5T576 704zm428 481 101-382q6-26-7.5-48.5T1059 725t-48 6.5-30 39.5l-101 382q-60 5-107 43.5t-63 98.5q-20 77 20 146t117 89 146-20 89-117q16-60-6-117t-72-91zm660-33q0-53-37.5-90.5T1536 1024t-90.5 37.5-37.5 90.5 37.5 90.5 90.5 37.5 90.5-37.5 37.5-90.5zm-640-640q0-53-37.5-90.5T896 384t-90.5 37.5T768 512t37.5 90.5T896 640t90.5-37.5T1024 512zm448 192q0-53-37.5-90.5T1344 576t-90.5 37.5T1216 704t37.5 90.5T1344 832t90.5-37.5T1472 704zm320 448q0 261-141 483-19 29-54 29H195q-35 0-54-29Q0 1414 0 1152q0-182 71-348t191-286 286-191 348-71 348 71 286 191 191 286 71 348z" fill="#ffffff" class="color000000 svgShape"/></svg><span class="fs-5 ms-3 d-none d-sm-inline">
@@ -194,8 +188,11 @@
         </div>
       </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/v/bs5/dt-1.13.8/datatables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.3/dist/sweetalert2.all.min.js"></script>
+ 
     <script>
       document.addEventListener('DOMContentLoaded', function () {
         const deleteButtons = document.querySelectorAll('.delete-user');
@@ -223,6 +220,12 @@
           });
         });
       });
+      
+        $(document).ready(function () {
+          $("table").DataTable({
+            order:[0,'desc']
+          });
+        });
       </script>
 </body>
 </html>

@@ -1,4 +1,3 @@
-
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
@@ -14,7 +13,6 @@ const credential = {
 
 router.get("/adminlog", isAdminAuthenticated, adminController.getadminLog);
 router.post("/adminlog", isAdminAuthenticated, adminController.postadminlog);
-router.get("/adminhome", isAdminAuthenticated,adminController.getadminHome);
 router.get("/adminproducts", isAdminAuthenticated, adminController.adminProducts);
 router.get("/addproducts",  isAdminAuthenticated, adminController.getaddProducts);
 router.post("/addproducts", upload,  isAdminAuthenticated, adminController.postaddproducts);
@@ -22,8 +20,6 @@ router.get("/editproduct/:id",  isAdminAuthenticated,adminController.geteditprod
 router.post("/editproduct/:id", upload, isAdminAuthenticated, adminController.posteditproduct);
 router.post("/deleteImage/:id", isAdminAuthenticated,adminController.postdeleteimage)
 router.get("/deleteproduct/:id", isAdminAuthenticated,adminController.getdeleteProducts);
-// router.get("/addproducts", adminController.getaddproduct);
-// router.post("/addproduct", upload, adminController.postaddproduct);
 router.get("/adminusers",  isAdminAuthenticated,adminController.getadminusers);
 router.post("/adduser",  isAdminAuthenticated,adminController.postadduser);
 router.get("/edituser/:id",  isAdminAuthenticated,adminController.getedituser);
@@ -48,10 +44,3 @@ router.post("/categoryoffer/:category", isAdminAuthenticated,adminController.pos
 
 
 module.exports = router;
-
-
-
-
-
-
-

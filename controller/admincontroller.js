@@ -146,151 +146,6 @@ exports.getadmindashboard = async (req, res) => {
     }
 };
 
-// exports.getadmindashboard = async (req,res) =>{
-//     try {
-//       const totalProducts = await prcollec.countDocuments({});
-//       const totalGrossResult = await ordcollec.aggregate([
-//         {
-//           $group: {
-//             _id: null,
-//             totalGross: { $sum: "$totalPrice" },
-//           },
-//         },
-//       ]);
-//       const totalGross = totalGrossResult.length > 0 ? totalGrossResult[0].totalGross : 0;
-//       const totalOrders = await ordcollec.countDocuments({});
-
-//       const monthlySales = await ordcollec.aggregate([
-//         {
-//             $lookup: {
-//                 from: "products",
-//                 localField: "items.productId",
-//                 foreignField: "_id",
-//                 as: "productInfo"
-//             }
-//         },
-//         {
-//             $unwind: "$productInfo"
-//         },
-//         {
-//             $project: {
-//                 month: { $month: "$dateoforder" },
-//                 year: { $year: "$dateoforder" },
-//                 totalPrice: 1,
-//                 category: "$productInfo.category"
-//             }
-//         }
-//     ]);
-    
-//     // Initialize arrays for each category
-//     const menSales = Array(12).fill(0);
-//     const womenSales = Array(12).fill(0);
-//     const smartSales = Array(12).fill(0);
-
-//     // Push sales data into respective arrays
-//     monthlySales.forEach(sale => {
-//         const monthIndex = sale.month - 1; // 0-based index for months array
-//         switch (sale.category) {
-//             case 'Men':
-//                 menSales[monthIndex] += sale.totalPrice;
-//                 break;
-//             case 'Women':
-//                 womenSales[monthIndex] += sale.totalPrice;
-//                 break;
-//             case 'Smart':
-//                 smartSales[monthIndex] += sale.totalPrice;
-//                 break;
-//             default:
-//                 break;
-//         }
-//     });
-
-//     // Chart configuration for Men's category
-//     const menChartConfig = {
-//         type: 'bar',
-//         data: {
-//             labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-//             datasets: [{
-//                 label: 'Men Sales',
-//                 data: menSales,
-//                 backgroundColor: 'blue',
-//                 borderColor: 'blue',
-//                 borderWidth: 1
-//             }]
-//         },
-//         options: {
-//             scales: {
-//                 yAxes: [{
-//                     ticks: {
-//                         beginAtZero: true
-//                     }
-//                 }]
-//             }
-//         }
-//     };
-
-//     // Chart configuration for Women's category
-//     const womenChartConfig = {
-//         type: 'bar',
-//         data: {
-//             labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-//             datasets: [{
-//                 label: 'Women Sales',
-//                 data: womenSales,
-//                 backgroundColor: 'pink',
-//                 borderColor: 'pink',
-//                 borderWidth: 1
-//             }]
-//         },
-//         options: {
-//             scales: {
-//                 yAxes: [{
-//                     ticks: {
-//                         beginAtZero: true
-//                     }
-//                 }]
-//             }
-//         }
-//     };
-
-//     // Chart configuration for Smart category
-//     const smartChartConfig = {
-//         type: 'bar',
-//         data: {
-//             labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-//             datasets: [{
-//                 label: 'Smart Sales',
-//                 data: smartSales,
-//                 backgroundColor: 'green',
-//                 borderColor: 'green',
-//                 borderWidth: 1
-//             }]
-//         },
-//         options: {
-//             scales: {
-//                 yAxes: [{
-//                     ticks: {
-//                         beginAtZero: true
-//                     }
-//                 }]
-//             }
-//         }
-//     };
-//        console.log("mensales"+menSales)
-  
-//       res.render("admin/admindashboard", {
-//         totalProducts: totalProducts,
-//         totalGross: totalGross,
-//         totalOrders: totalOrders,
-//         menChart: JSON.stringify(menChartConfig),
-//         womenChart: JSON.stringify(womenChartConfig),
-//         smartChart: JSON.stringify(smartChartConfig)
-//       });
-//     } catch (error) {
-//       console.log("Error fetching monthly sales data:", error);
-//       res.status(500).json({ error: "Internal Server Error" });
-//     }
-//   };
 
 exports.getmonthlysales = async (req,res) =>{
   try {
@@ -319,6 +174,7 @@ exports.getmonthlysales = async (req,res) =>{
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
 }};
+
 exports.getsalespdf = async (req, res) => {
   try {
     const { interval } = req.params;
@@ -610,7 +466,7 @@ exports.postadminlog = (req,res)=>{
             req.session.admin = true
             uscollec.find({}).exec()
                 .then(users =>{
-                    res.render("admin/adminhome")
+                    res.redirect("/admindashboard")
                         
                     })
                
@@ -627,25 +483,6 @@ exports.postadminlog = (req,res)=>{
     } 
 }
 
-exports.getadminHome = (req, res) => {
-    try{
-        if(req.session.admin){
-            uscollec.find({}).exec()
-                .then(users => {
-                    res.render("admin/adminhome");
-                })
-                .catch(err => {
-                    res.send(err);
-                });
-            }else{
-                res.redirect("/adminlog")
-            }
-
-    }catch (err) {
-        console.error(err);
-        res.redirect("/error");
-    }  
-};
 
 exports.adminProducts = (req, res) => {
     try{
@@ -732,72 +569,6 @@ exports.postaddproducts = async (req, res) => {
     }
 };
 
-// exports.postaddproducts = async(req,res)=>{
-//     const imageArray = [];
-//     const uploadsDir = 'uploads'; // Adjust this path as needed
- 
-//     for (const file of req.files) {
-//         const filename = file.filename;
-
-//         if (filename.endsWith('-cropped')) {
-//             continue;
-//         }
- 
-//         // Check if file.buffer is defined
-//         if (!file.buffer) {
-//             console.error(`No buffer found for file ${filename}`);
-//             continue;
-//         }
- 
-//         // Decode base64 data URL and save the cropped image
-//         const base64Data = file.buffer.toString('base64');
-//         const imagePath = `${uploadsDir}/${filename}`;
- 
-//         // Catch and handle errors during file writing
-//         try {
-//             await fs.promises.writeFile(imagePath, base64Data, 'base64');
-//         } catch (err) {
-//             console.error(`Error writing file ${filename}:`, err);
-//             continue;
-//         }
- 
-//         // Optionally, you can get the dimensions of the saved image
-//     const dimensions = sizeOf(imagePath);
-//     const width = dimensions.width;
-//     const height = dimensions.height;
-
-//     imageArray.push({ filename, width, height });
-//     }
-//     const prod = new prcollec({
-//         modelname:req.body.modelname,
-//         brand:req.body.brand,
-//         description:req.body.description,
-//         rating:req.body.rating,
-//         category:req.body.category,
-//         colour:req.body.colour,
-//         dialshape:req.body.dialshape,
-//         strapmaterial:req.body.strapmaterial,
-//         image:imageArray,
-//         price:req.body.price,
-//         stock:req.body.stock
-
-//     });
-//     prod.save()
-    
-//         prcollec.find({}).exec()
-//         .then(product=>{
-//         res.render("admin/adminproducts",{
-//             product:product,
-//             success:"Product added successfully"
-//         })
-        
-//         console.log(prod);
-//     })
-//     .catch((err)=>{
-//         res.send(err)
-//         console.log(err);
-//     })
-//  }
 
 exports.geteditproduct = (req,res) =>{
     try{
@@ -823,41 +594,6 @@ exports.geteditproduct = (req,res) =>{
     }
 }
 
-// exports.posteditproduct = (req,res) =>{
-//     let id = req.params.id;
-//     const imageArray = [];
-// for(const file of req.files){
-//     imageArray.push(file.filename);
-// }
-//     prcollec.findByIdAndUpdate(id,{
-//         modelname:req.body.modelname,
-//         brand:req.body.brand,
-//         description:req.body.description,
-//         rating:req.body.rating,
-//         category:req.body.category,
-//         colour:req.body.colour,
-//         dialshape:req.body.dialshape,
-//         strapmaterial:req.body.strapmaterial,
-//         image:imageArray,
-//         isListed:req.body.isListed,
-//         price:req.body.price,
-//         stock:req.body.stock
-
-//     },{ new: true }).exec()
-//     prcollec.find({}).exec()
-//     .then(product=>{
-//         res.render("admin/adminproducts",{
-//             product:product,
-//             success:"Product edited sucessfully!!"
-//         })
-//         console.log(product);
-//     }).catch((err)=>{
-//         res.send(err);
-//         console.log(err);
-//     })
-
-
-// }
 
 exports.posteditproduct = (req, res) => {
     try{
@@ -965,47 +701,6 @@ exports.getdeleteProducts= (req,res) =>{
     } 
 }
 
-// exports.getaddproduct = (req,res)=>{
-  
-//     res.render("admin/addproducts")
-
-// }
-
-// exports.postaddproduct = upload,(req,res)=>{
-//     const imageArray = [];
-//     for(const file of req.files){
-//         imageArray.push(file.filename);
-//     }
-//     const prod = new prcollec({
-//         modelname:req.body.modelname,
-//         brand:req.body.brand,
-//         description:req.body.description,
-//         rating:req.body.rating,
-//         category:req.body.category,
-//         colour:req.body.colour,
-//         dialshape:req.body.dialshape,
-//         strapmaterial:req.body.strapmaterial,
-//         image:imageArray,
-//         price:req.body.price,
-//         stock:req.body.stock
-
-//     });
-//     prod.save()
-    
-//         prcollec.find({}).exec()
-//         .then(product=>{
-//         res.render("admin/adminproducts",{
-//             product:product,
-//             success:"Product added successfully"
-//         })
-        
-//         console.log(prod);
-//     })
-//     .catch((err)=>{
-//         res.send(err)
-//         console.log(err);
-//     })
-// }
 
 exports.getadminusers = (req,res)=>{
     try{

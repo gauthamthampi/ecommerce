@@ -130,87 +130,6 @@ exports.getwishlist = async (req, res) => {
     }
 };
 
-
-// exports.getorderconfirm = async(req, res) => {
-//     let cartId = req.params.id;
-//     let index = req.query.selectedIndex;
-//     let userId = nameext._id;
-//     let user = await uscollec.findById(userId);
-//     let payment = req.body.flexRadioDefault1;
-
-//     console.log(index);
-
-//     const cart = await cartcollec.findById(cartId);
-   
-//     if (!cart) {
-//         return res.status(404).send('Cart not found');
-//     }
-
-//     const selectedAddress = user.address[index];
-    
-
-//     const currentDate = new Date();
-
-//     const year = currentDate.getFullYear();
-//     const month = currentDate.getMonth() + 1;
-//     const day = currentDate.getDate();
-
-//     // Format the date as a string (you can customize the format as needed)
-//     const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
-   
-//     const updatedItems = cart.items.map(item => ({
-//         productId: item.productId,
-//         quantity: item.quantity,
-//         prostatus: "Confirmed" // Set prostatus to "Confirmed"
-//     })); 
-
-//     const orderData = {
-//         userId: cart.userId,
-//         items: updatedItems,
-//         totalPrice: cart.totalPrice,
-//         orderStatus: 'Confirmed',
-//         address: [selectedAddress],
-//         paymentMethod: payment,
-//         dateoforder: formattedDate
-//     };
-
-//     const order = await ordcollec.create(orderData);
-
-//     // Update product stock based on items in the order
-//     for (const orderItem of order.items) {
-//         const productId = orderItem.productId;
-//         const quantity = orderItem.quantity;
-       
-
-//         // Find the product and update its stock
-//         await prcollec.findByIdAndUpdate(productId, { $inc: { stock: -quantity } });
-//     }
-
-//     await cartcollec.findByIdAndDelete(cartId);
-
-//     // Render the order confirmation page or redirect to order details page
-//     res.render('user/orderconfirm', { order});
-// };
-
-
-
-// exports.check =  async(req,res)=>{
-//     let name = req.body.name;
-//     await uscollec.findOne({name:name}).exec()
-//     .then(()=>{
-//         return true;
-//     })
-// }
-// exports.viewordertest = async(req,res)=>{
-//     let orders = await ordcollec.find().sort({dateoforder:1});
-    //    res.render('orders',{
-    //     orders
-    //    })
-// }
-
-
-
-
 exports.getdeleteaddress =  async(req,res)=>{
     try{
         let user = await uscollec.findOne({email:req.session.user})
@@ -574,18 +493,6 @@ exports.postchangepassword = async(req,res)=>{
     }
     }
 
-// if(req.body.password===req.body.confirmpass){
-//     const hashedPassword = await bcrypt.hash(newpass.password,saltRounds);
-//     await usercollec.updateOne({password:hashedPassword})
-//     console.log(hashedPassword);
-//     res.redirect("/login",{
-//         incorrect:"Password updated"
-//     })
-
-// }else{
-//    res.send("Error confirming password")
-// }
-
 exports.getSignup = (req, res) => {
     try{
         if(!req.session.user){
@@ -694,21 +601,6 @@ exports.getOtpVerification = (req, res) => {
             otp: otp,
             expiry: expiry
         }
-        // const check = otpcoll.find({email:otpdata.email}).exec();
-        // if(check){
-        //     otpcoll.findByEmailAndUpdate(otpdata.email,{
-        //         otp:otp,
-        //         expiry:expiry
-        //     })
-        // }else{
-        // otpcoll.insertMany(otpdata)
-        // .then(()=>{
-        //     console.log(otpdata);
-        //     res.render("user/otp")
-        // }).catch(err=>{
-        //     console.log(err);
-        // })
-        // }
 
     }catch (err) {
         console.error(err);
@@ -797,21 +689,6 @@ exports.postOtpVerification = (req, res) => {
                 otp: otp,
                 expiry: expiry
             }
-            // const check = otpcoll.find({email:otpdata.email}).exec();
-            // if(check){
-            //     otpcoll.findByEmailAndUpdate(otpdata.email,{
-            //         otp:otp,
-            //         expiry:expiry
-            //     })
-            // }else{
-            // otpcoll.insertMany(otpdata)
-            // .then(()=>{
-            //     console.log(otpdata);
-            //     res.render("user/resendotp")
-            // }).catch(err=>{
-            //     console.log(err);
-            // })
-            // }
 
         }catch (err) {
             console.error(err);
@@ -914,16 +791,6 @@ exports.getMens = async (req, res) => {
     };
 
 
-//     prcollec.find({isListed:'true',category:'Men'}).exec()
-//     .then(product=>{
-//         res.render("user/mens",{
-//             product:product,
-//         })
-
-//     })
-// }
-
-
 exports.getMensPreview = (req, res) => {
     try{
         let id = req.params.id;
@@ -1000,15 +867,6 @@ exports.getWomens= async(req, res) => {
     }
 };
 
-//     prcollec.find({category:"Women",isListed:"true"}).exec()
-//     .then(product=>{
-//         res.render("user/womens",{
-//             product:product
-//         })
-//     }).catch(err=>{
-//         console.log(err);
-//     })
-// }
 
 exports.getSmart= async(req, res) => {
     const perPage = 9;

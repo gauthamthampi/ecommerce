@@ -73,10 +73,11 @@
       <div class="container mt-5 p-3">
         <div class="row bg-white">
             <div class="col-9 border-end">
-                <p class="fs-1 text-center" style="font-family: 'Times New Roman', Times, serif;">CART </p>
-                <!-- <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                <p class="fs-1 text-center fw-bold" style="font-family: Allura, cursive;
+                font-weight: 400;">My Cart</p>
+                <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
                   <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 75%"></div>
-                </div> -->
+                </div>
                
                 <% if (itemsWithDetails && itemsWithDetails.length > 0) { %>
                     <% itemsWithDetails.forEach(product => { %>
@@ -136,7 +137,7 @@
             <% if (  userCart.totalPrice > 0) { %>
               <div class="col-3 border-start">
                   <div class="row p-4">
-                      <h4 class="text-center mb-3" style="font-family: 'Times New Roman', Times, serif;">Summary</h4>
+                      <h2 class="text-center mb-3" style="font-family: 'Times New Roman', Times, serif" >Summary</h2>
                       <div class="row">
                           <div class="col">
                               <h5>Subtotal</h5>
@@ -296,13 +297,13 @@
             });
         });
 
-        // // Update the progress bar value
-        // function updateProgressBar(value) {
-        //     $('.progress').attr('aria-valuenow', value);
-        //     $('.progress-bar').css('width', value + '%');
-        // }
+        // Update the progress bar value
+        function updateProgressBar(value) {
+            $('.progress').attr('aria-valuenow', value);
+            $('.progress-bar').css('width', value + '%');
+        }
     
-        // updateProgressBar(33);
+        updateProgressBar(33);
 
         
         document.addEventListener('DOMContentLoaded', function () {

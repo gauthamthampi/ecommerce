@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Allura&family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.css" integrity="sha512-bs9fAcCAeaDfA4A+NiShWR886eClUcBtqhipoY5DM60Y1V3BbVQlabthUBal5bq8Z8nnxxiyb1wfGX2n76N1Mw==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css'>
     <link rel="stylesheet" href="/static/crop.css">
@@ -125,14 +124,7 @@
             <label for="floatingSelect">Choose the Strap material</label>
           </div>
 
-                <!-- Image uploa -->
-                <!-- <div class="mb-3">
-                    <label for="formFileMultiple" class="form-label">Upload images</label>
-                    <input class="form-control" type="file" multiple name="image" id="imageInput" required>
-                </div>
-
-                <div id="imagePreviewContainer" class="mb-3" style="max-width: 300px; max-height: 300px; overflow: hidden;">
-                </div> -->
+            
                 <label for="fileUploader"></label>
                 <input type="file" name="image" id="fileUploader" data-image-preview="#imagePreview" accept=".jpg,.png,.jpeg" multiple>
                 <div id="imagePreview"></div>
@@ -176,12 +168,8 @@
     <!-- Script -->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.js'></script>
     <script src="/js/crop.js"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js" integrity="sha512-9KkIqdfN7ipEW6B6k+Aq20PV31bjODg4AA52W+tYtAE0jE0kMx49bjJ3FgvS56wzmyfMUHbQ4Km2b7l9+Y/+Eg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
    
-
-<!-- Script -->
-<!-- Script -->
 <script>
   // Array to store images temporarily
   let tempImages = [];
