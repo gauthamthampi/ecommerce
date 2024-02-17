@@ -23,7 +23,7 @@ const razorpay = new Razorpay({
   key_secret: 'EWkYDVa7Rg320sZDHsE9WbTb',
 });
 
-let nameext;
+// let nameext;
 
 
 exports.downloadInvoice = async (req, res) => {
@@ -150,24 +150,30 @@ async function getProductDetails(items) {
 }
 
 exports.generateReferalcode = async(req,res)=>{
-    function generateRandomString(length) {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        let result = '';
-        for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * characters.length));
+    try{
+        function generateRandomString(length) {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
         }
-        return result;
-    }
+        
     
-
-    const randomString = generateRandomString(6); // Generates a random string of length 6
-    console.log("Generated Random String:", randomString);
-     nameext = await uscollec.findOne({email:req.session.user})
-    const user = await uscollec.findById(nameext._id);
-    user.referal = randomString;
-    await user.save();
-    res.redirect("/userprof")
+        const randomString = generateRandomString(6); // Generates a random string of length 6
+        console.log("Generated Random String:", randomString);
+         let nameext = await uscollec.findOne({email:req.session.user})
+        const user = await uscollec.findById(nameext._id);
+        user.referal = randomString;
+        await user.save();
+        res.redirect("/userprof")
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    } 
 }
+
 exports.removecoupon = async (req, res) => {
     try {
         let cartId = req.params.id;
@@ -242,7 +248,7 @@ exports.selectcoupon = async (req, res) => {
 
 exports.postvieworder = async (req, res) => {
     try {
-        // nameext = await uscollec.findOne({email:req.session.user});
+        let nameext = await uscollec.findOne({email:req.session.user});
         const orderId = req.params.id;
         const user = await uscollec.findById(nameext._id);
         console.log("user"+user)
@@ -343,7 +349,7 @@ exports.renderOrderConfirmationPage = async (req, res) => {
 
 exports.getorderconfirm = async(req, res) => {
     try {
-        nameext = await uscollec.findOne({email:req.session.user})
+        let nameext = await uscollec.findOne({email:req.session.user})
         let cartId = req.params.id;
         let index = req.query.selectedIndex;
         let userId = nameext._id;
@@ -449,75 +455,91 @@ exports.getorderconfirm = async(req, res) => {
 
 
  exports.createrazorpayorder = async(req, res) => {
-    const { selectedAddressIndex, totalAmount } = req.body;
-    nameext = await uscollec.findOne({email:req.session.user})
-  
-    // You should retrieve the user's details and order information here
-    // Replace the placeholders with actual data
-    const userDetails = {
-      name: nameext.firstname,
-      email: nameext.email,
-    };
-  
-    // Create a Razorpay order
-    const options = {
-      amount: totalAmount * 100, // Amount in paise
-      currency: 'INR',
-      receipt: 'order_' + Date.now(),
-      payment_capture: 1,
-    };
-  
-    razorpay.orders.create(options, (err, order) => {
-      if (err) {
-        console.error('Error creating Razorpay order:', err);
-        return res.status(500).json({ error: 'Error creating Razorpay order' });
-      }
-  
-      res.json({
-        id: order.id,
-        amount: order.amount / 100, // Amount in rupees
-        userDetails: userDetails,
-      });
-    });
+    try{
+        const { selectedAddressIndex, totalAmount } = req.body;
+        let nameext = await uscollec.findOne({email:req.session.user})
+      
+        // You should retrieve the user's details and order information here
+        // Replace the placeholders with actual data
+        const userDetails = {
+          name: nameext.firstname,
+          email: nameext.email,
+        };
+      
+        // Create a Razorpay order
+        const options = {
+          amount: totalAmount * 100, // Amount in paise
+          currency: 'INR',
+          receipt: 'order_' + Date.now(),
+          payment_capture: 1,
+        };
+      
+        razorpay.orders.create(options, (err, order) => {
+          if (err) {
+            console.error('Error creating Razorpay order:', err);
+            return res.status(500).json({ error: 'Error creating Razorpay order' });
+          }
+      
+          res.json({
+            id: order.id,
+            amount: order.amount / 100, // Amount in rupees
+            userDetails: userDetails,
+          });
+        });
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
   };
 
 exports.postcartcheckout = async(req,res)=>{
-    let address = req.body.address;
-    console.log(address);
-    res.send("Order loading......")
-}
-exports.postaddaddresscart = async(req,res)=>{
-    nameext = await uscollec.findOne({email:req.session.user})
-    let id = nameext._id;
-    const addaddress = {
-        type:req.body.type,
-        houseno:req.body.houseno,
-        street:req.body.street,
-        city:req.body.city,
-        state:req.body.state,
-        pincode:req.body.pincode
+    try{
+        let address = req.body.address;
+        console.log(address);
+        res.send("Order loading......")
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
     }
-    // 
-    await uscollec.findByIdAndUpdate(id,{
-      $push:{
-        'address':addaddress
-      }
-    })
-    console.log(addaddress);
-    const updated = await uscollec.findById(id)
-    nameext = updated;
-    let user = await uscollec.findById(nameext._id)
-    let cartId = req.params.id;
-    let cart = await cartcollec.findById(cartId);
-    console.log(cart);
-    res.redirect(`/user/cartcheckout/${cartId}`)
-    
+}
+
+exports.postaddaddresscart = async(req,res)=>{
+    try{
+        let nameext = await uscollec.findOne({email:req.session.user})
+        let id = nameext._id;
+        const addaddress = {
+            type:req.body.type,
+            houseno:req.body.houseno,
+            street:req.body.street,
+            city:req.body.city,
+            state:req.body.state,
+            pincode:req.body.pincode
+        }
+        //  
+        await uscollec.findByIdAndUpdate(id,{
+          $push:{
+            'address':addaddress
+          }
+        })
+        console.log(addaddress);
+        const updated = await uscollec.findById(id)
+        nameext = updated;
+        let user = await uscollec.findById(nameext._id)
+        let cartId = req.params.id;
+        let cart = await cartcollec.findById(cartId);
+        console.log(cart);
+        res.redirect(`/user/cartcheckout/${cartId}`)
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
 
 
   exports.cartquandityupd = async (req, res) => {
     try {
-    nameext = await uscollec.findOne({email:req.session.user})
+      let nameext = await uscollec.findOne({email:req.session.user})
       const quantity = req.body.quantity;
       let userId = nameext._id;
       let productId = req.params.id;
@@ -570,149 +592,176 @@ exports.postaddaddresscart = async(req,res)=>{
     
 
 exports.cartcheckout = async(req,res)=>{
-    let user = await uscollec.findById(nameext._id)
-    let cartId = req.params.id;
-    let cart = await cartcollec.findById(cartId);
-    console.log(cart); 
-    res.render("user/checkout",{
-        userData:user,
-        cartData:cart,
-        user:`${nameext.firstname} ${nameext.secondname}`
-    })
-    
+    try{
+        let nameext = await uscollec.findOne({email:req.session.user})
+        let user = await uscollec.findById(nameext._id)
+        let cartId = req.params.id;
+        let cart = await cartcollec.findById(cartId);
+        console.log(cart); 
+        res.render("user/checkout",{
+            userData:user,
+            cartData:cart,
+            user:`${nameext.firstname} ${nameext.secondname}`
+        })
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
+
 exports.removepdcart = async(req,res)=>{
-    if(req.session.user){
-        let productId = req.params.id;
-        let product = await prcollec.findById(productId);
-        let userId = nameext._id;
-
-        const cart = await cartcollec.findOne({userId:userId});
-
-        const itemIndex = cart.items.findIndex(item => item.productId == productId);
-
-        if (itemIndex === -1) {
-            return res.status(404).json({ message: `Product with productId ${productId} not found in the cart` });
+    try{
+        if(req.session.user){
+            let nameext = await uscollec.findOne({email:req.session.user})
+            let productId = req.params.id;
+            let product = await prcollec.findById(productId);
+            let userId = nameext._id;
+    
+            const cart = await cartcollec.findOne({userId:userId});
+    
+            const itemIndex = cart.items.findIndex(item => item.productId == productId);
+    
+            if (itemIndex === -1) {
+                return res.status(404).json({ message: `Product with productId ${productId} not found in the cart` });
+              }
+    
+    
+         // Calculate the reduction in total price based on the quantity being removed
+        const removedItem = cart.items[itemIndex];
+        const reduction = removedItem.quantity * product.price;
+    
+        // Update the cart by pulling the item and reducing the total price
+        const result = await cartcollec.updateOne(
+          { userId: userId },
+          {
+            $pull: { items: { productId: productId } },
+            $inc: { totalPrice: -reduction }
           }
-
-
-     // Calculate the reduction in total price based on the quantity being removed
-    const removedItem = cart.items[itemIndex];
-    const reduction = removedItem.quantity * product.price;
-
-    // Update the cart by pulling the item and reducing the total price
-    const result = await cartcollec.updateOne(
-      { userId: userId },
-      {
-        $pull: { items: { productId: productId } },
-        $inc: { totalPrice: -reduction }
-      }
-    );
+        );
+        
+        const updatedCart = await cartcollec.findOne({ userId: userId });
+            if (!updatedCart || updatedCart.items.length === 0) {
+                // Delete the cart document
+                await cartcollec.deleteOne({ userId: userId });
+            }
     
-    const updatedCart = await cartcollec.findOne({ userId: userId });
-        if (!updatedCart || updatedCart.items.length === 0) {
-            // Delete the cart document
-            await cartcollec.deleteOne({ userId: userId });
-        }
-
-        res.redirect("/user/user_cart");
-
-    }else{
-        res.redirect("/login")
-    }
-}
-exports.addtocart = async(req,res)=>{
-   if(req.session.user){
-    nameext = await uscollec.findOne({email:req.session.user})
-   let productId = req.params.productId;
-   let pro = await prcollec.findById(productId);
-   const userId = nameext._id;
-    const items = {
-         productId: productId,
-         quantity: 1 
-        };
-        let price;
-    if(pro.offerprice>0){
-        price = pro.offerprice;
-    }else{
-        price = pro.price;
-    }
-    
-    const check = await cartcollec.findOne({userId:userId});
-    if(check){
-        const prodcheck = await cartcollec.findOne({'items.productId':productId});
-        if(prodcheck){
-
-            const encodedMessage = encodeURIComponent("Product already exists in the cart");
-            req.session.message = "Product already exists in the cart";
             res.redirect("/user/user_cart");
-
+    
         }else{
-            check.items.push(items);
-            check.totalPrice += price;
-            await check.save();
-            console.log("New items added to cart. The item is " + JSON.stringify(items));
-            res.redirect("/user/user_cart");
-
+            res.redirect("/login")
         }
 
-    }else{
-        const newcart = new cartcollec({
-            userId: userId,
-            items: [items],
-            totalPrice: price
-        });
-        await newcart.save();
-        console.log("New cart created!!");
-        res.redirect("/user/user_cart");
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
     }
-
-   }else{
-    res.redirect("/login")
 }
-}
-exports.getusercart = async (req, res) => {
-    if (req.session.user) {
-        nameext = await uscollec.findOne({email:req.session.user})
-        let userId = nameext._id;
-        let proId = req.params.id;
-        let user = await uscollec.findById(userId);
 
-        const userCart = await cartcollec.findOne({ userId: userId });
-        const userCartPro = await cartcollec.findOne({ userId: userId, 'items.productId': proId });
-        if (userCart) {
-            if(!userCartPro){
-                // Extract product IDs from the cart items
-            const productIds = userCart.items.map(item => item.productId);
-
-            // Fetch product details based on the IDs
-            const productsInCart = await prcollec.find({ _id: { $in: productIds } });
-
-            // Combine product details with quantity from the cart
-            const itemsWithDetails = userCart.items.map(cartItem => {
-                const productDetails = productsInCart.find(product => product._id.equals(cartItem.productId));
-                return {
-                    quantity: cartItem.quantity,
-                    productDetails: productDetails || {}, // Empty object if product not found
+exports.addtocart = async(req,res)=>{
+    try{
+        if(req.session.user){
+           let nameext = await uscollec.findOne({email:req.session.user})
+           let productId = req.params.productId;
+           let pro = await prcollec.findById(productId);
+           const userId = nameext._id;
+            const items = {
+                 productId: productId,
+                 quantity: 1 
                 };
-            });
-
-            let coupons = user.coupons;
-            console.log("coupons"+coupons);
-
-            // Render the cart page with the items and additional details
-            res.render('user/usercart', { itemsWithDetails, userCart, coupons});
+                let price;
+            if(pro.offerprice>0){
+                price = pro.offerprice;
+            }else{
+                price = pro.price;
             }
-            else{
-                
-
+            
+            const check = await cartcollec.findOne({userId:userId});
+            if(check){
+                const prodcheck = await cartcollec.findOne({'items.productId':productId});
+                if(prodcheck){
+        
+                    const encodedMessage = encodeURIComponent("Product already exists in the cart");
+                    req.session.message = "Product already exists in the cart";
+                    res.redirect("/user/user_cart");
+        
+                }else{
+                    check.items.push(items);
+                    check.totalPrice += price;
+                    await check.save();
+                    console.log("New items added to cart. The item is " + JSON.stringify(items));
+                    res.redirect("/user/user_cart");
+        
+                }
+        
+            }else{
+                const newcart = new cartcollec({
+                    userId: userId,
+                    items: [items],
+                    totalPrice: price
+                });
+                await newcart.save();
+                console.log("New cart created!!");
+                res.redirect("/user/user_cart");
             }
-        } else{
-            res.render("user/cartempty")
+        
+           }else{
+            res.redirect("/login")
         }
-    } else {
-        res.redirect("/login");
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
     }
+}
+
+exports.getusercart = async (req, res) => {
+    try{
+        if (req.session.user) {
+            let nameext = await uscollec.findOne({email:req.session.user})
+            let userId = nameext._id;
+            let proId = req.params.id;
+            let user = await uscollec.findById(userId);
+    
+            const userCart = await cartcollec.findOne({ userId: userId });
+            const userCartPro = await cartcollec.findOne({ userId: userId, 'items.productId': proId });
+            if (userCart) {
+                if(!userCartPro){
+                    // Extract product IDs from the cart items
+                const productIds = userCart.items.map(item => item.productId);
+    
+                // Fetch product details based on the IDs
+                const productsInCart = await prcollec.find({ _id: { $in: productIds } });
+    
+                // Combine product details with quantity from the cart
+                const itemsWithDetails = userCart.items.map(cartItem => {
+                    const productDetails = productsInCart.find(product => product._id.equals(cartItem.productId));
+                    return {
+                        quantity: cartItem.quantity,
+                        productDetails: productDetails || {}, // Empty object if product not found
+                    };
+                });
+    
+                let coupons = user.coupons;
+                console.log("coupons"+coupons);
+    
+                // Render the cart page with the items and additional details
+                res.render('user/usercart', { itemsWithDetails, userCart, coupons});
+                }
+                else{
+                    
+    
+                }
+            } else{
+                res.render("user/cartempty")
+            }
+        } else {
+            res.redirect("/login");
+        }
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
+   
 };
 
 
@@ -744,170 +793,193 @@ exports.updateQuantity = async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 };
+
 exports.getcheckout = async(req,res) =>{
-    nameext = await uscollec.findOne({email:req.session.user})
-    let id = req.params.id;
-    let quantity = req.query.quantity;
-    let user = await uscollec.findOne(nameext)
-    let pro = await prcollec.findById(id)
-    let userId = nameext._id;
-  
-    let cart = await cartcollec.findOne({userId:userId})
-    console.log(cart);
-
-    const productIdToUpdate = id; // Replace with the actual product ID you want to update
-    const newQuantity = quantity; // Replace with the new quantity
-
-    // Find the index of the cart item with the specified product ID
-    const cartItemIndex = cart.items.findIndex(item => item.productId.equals(productIdToUpdate));
-
-    if (cartItemIndex !== -1) {
-        // Update the quantity field of the found cart item
-        cart.items[cartItemIndex].quantity = newQuantity;
-        cart.totalPrice += newQuantity*pro.price;
-
-        // Save the updated cart
-        await cart.save();
-
-        console.log(`Quantity updated successfully for product ID: ${productIdToUpdate}`);
-    } else {
-        console.log('Product not found in the cart.');
-    }
-    // await cartcollec.updateOne({'items.quantity':quantity})
-    res.render("user/checkout.ejs",{
-        product:pro,
-        user:nameext.firstname,
-        userData:user
-    })
-
-
-}
-exports.getprodcart = async (req, res) => {
-    if (req.session.user) {
-        try {
-            nameext = await uscollec.findOne({email:req.session.user})
-            let id = req.params.id;
-            const pro = await prcollec.findById(id);
-            const userId = nameext._id; // Assuming the user ID is stored in the session
-            const items = {
-                productId: pro._id,
-                quantity: 1 
-            };
-            const price = pro.price;
-            const check = await cartcollec.findOne({ userId: userId });
-            
-
-            const newQuantity = parseInt(req.body.quantity, 10);
-            const updatedTotalPrice = price * newQuantity;
-
-            if (check) {
-                const procheck = await cartcollec.findOne({'items.productId':id})
-                if(procheck){
-                    
-               
-                res.render("user/cart.ejs", {
-                    product: pro,
-                    message:"Product already exists in the cart"
-                });
-                }else{
-                    check.items.push(items);
-                  
-                    await check.save();
-                    console.log("New items added to cart. The item is " + JSON.stringify(items));
-                }              
-            } else {
-                const newcart = new cartcollec({
-                    userId: userId,
-                    items: [items],
-                    totalPrice: price 
-                });
-                await newcart.save();
-                console.log("New cart created!!");
-            }
-
-            res.render("user/cart.ejs", {
-                product: pro
-            });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send('Internal Server Error');
+    try{
+        let nameext = await uscollec.findOne({email:req.session.user})
+        let id = req.params.id;
+        let quantity = req.query.quantity;
+        let user = await uscollec.findOne(nameext)
+        let pro = await prcollec.findById(id)
+        let userId = nameext._id;
+      
+        let cart = await cartcollec.findOne({userId:userId})
+        console.log(cart);
+    
+        const productIdToUpdate = id; // Replace with the actual product ID you want to update
+        const newQuantity = quantity; // Replace with the new quantity
+    
+        // Find the index of the cart item with the specified product ID
+        const cartItemIndex = cart.items.findIndex(item => item.productId.equals(productIdToUpdate));
+    
+        if (cartItemIndex !== -1) {
+            // Update the quantity field of the found cart item
+            cart.items[cartItemIndex].quantity = newQuantity;
+            cart.totalPrice += newQuantity*pro.price;
+    
+            // Save the updated cart
+            await cart.save();
+    
+            console.log(`Quantity updated successfully for product ID: ${productIdToUpdate}`);
+        } else {
+            console.log('Product not found in the cart.');
         }
-    } else {
-        res.redirect("/login");
+        // await cartcollec.updateOne({'items.quantity':quantity})
+        res.render("user/checkout.ejs",{
+            product:pro,
+            user:nameext.firstname,
+            userData:user
+        })
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
+}
+
+exports.getprodcart = async (req, res) => {
+    try{
+        if (req.session.user) {
+            try {
+                let nameext = await uscollec.findOne({email:req.session.user})
+                let id = req.params.id;
+                const pro = await prcollec.findById(id);
+                const userId = nameext._id; // Assuming the user ID is stored in the session
+                const items = {
+                    productId: pro._id,
+                    quantity: 1 
+                };
+                const price = pro.price;
+                const check = await cartcollec.findOne({ userId: userId });
+                
+    
+                const newQuantity = parseInt(req.body.quantity, 10);
+                const updatedTotalPrice = price * newQuantity;
+    
+                if (check) {
+                    const procheck = await cartcollec.findOne({'items.productId':id})
+                    if(procheck){
+                        
+                   
+                    res.render("user/cart.ejs", {
+                        product: pro,
+                        message:"Product already exists in the cart"
+                    });
+                    }else{
+                        check.items.push(items);
+                      
+                        await check.save();
+                        console.log("New items added to cart. The item is " + JSON.stringify(items));
+                    }              
+                } else {
+                    const newcart = new cartcollec({
+                        userId: userId,
+                        items: [items],
+                        totalPrice: price 
+                    });
+                    await newcart.save();
+                    console.log("New cart created!!");
+                }
+    
+                res.render("user/cart.ejs", {
+                    product: pro
+                });
+            } catch (error) {
+                console.error(error);
+                res.status(500).send('Internal Server Error');
+            }
+        } else {
+            res.redirect("/login");
+        }
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
     }
 };
 
 exports.postprodcart = async(req,res)=>{
-    const quantity = req.body.quantity;
+    try{
+        const quantity = req.body.quantity;
 
-    await cartcollec.updateOne({'items.quantity':quantity})
+        await cartcollec.updateOne({'items.quantity':quantity})
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
+   
 }
 
 exports.getvieworder = async (req, res) => {
-    if (req.session.user) {
-        nameext = await uscollec.findOne({email:req.session.user})
-        let userId = nameext._id;
-        let users = await uscollec.findById(userId)
-        let orders = await ordcollec.find({ userId });
-    
-       orders = orders.sort((a, b) => b.dateoforder - a.dateoforder);
-       
-        // Create an array to store detailed order information
-        const detailedOrders = [];
-    
-        // Loop through each order and fetch product details
-        for (const order of orders) {
-            const detailedOrder = {
-                id:order._id,
-                totalPrice: order.totalPrice,
-                orderStatus: order.orderStatus,
-                paymentMethod: order.paymentMethod,
-                dateoforder: order.dateoforder.toDateString(),
-                items: [], // Array to store detailed product information in the order
-                coupon: order.coupon
-            };
-    
-            // Loop through each item in the order and fetch product details
-            for (const item of order.items) {
-                const product = await prcollec.findById(item.productId);
-                if (product) {
-                    // Add relevant product details to the detailed order
-                    detailedOrder.items.push({
-                        productId:product._id,
-                        productName: product.modelname,
-                        image: product.image[0], // Assuming image is an array, you might need to adjust this based on your schema
-                        colour: product.colour,
-                        quantity: item.quantity,
-                        price: product.price,
-                        prostatus: item.prostatus
-                        // Add more details as needed
+    try{
+        if (req.session.user) {
+            let nameext = await uscollec.findOne({email:req.session.user})
+            let userId = nameext._id;
+            let users = await uscollec.findById(userId)
+            let orders = await ordcollec.find({ userId });
+        
+           orders = orders.sort((a, b) => b.dateoforder - a.dateoforder);
+           
+            // Create an array to store detailed order information
+            const detailedOrders = [];
+        
+            // Loop through each order and fetch product details
+            for (const order of orders) {
+                const detailedOrder = {
+                    id:order._id,
+                    totalPrice: order.totalPrice,
+                    orderStatus: order.orderStatus,
+                    paymentMethod: order.paymentMethod,
+                    dateoforder: order.dateoforder.toDateString(),
+                    items: [], // Array to store detailed product information in the order
+                    coupon: order.coupon
+                };
+        
+                // Loop through each item in the order and fetch product details
+                for (const item of order.items) {
+                    const product = await prcollec.findById(item.productId);
+                    if (product) {
+                        // Add relevant product details to the detailed order
+                        detailedOrder.items.push({
+                            productId:product._id,
+                            productName: product.modelname,
+                            image: product.image[0], // Assuming image is an array, you might need to adjust this based on your schema
+                            colour: product.colour,
+                            quantity: item.quantity,
+                            price: product.price,
+                            prostatus: item.prostatus
+                            // Add more details as needed
+                        });
+                    }
+                }
+        
+                // Fetch address details for the order
+                detailedOrder.address = []; // Initialize an array to store address details
+        
+                // Loop through the address array and push individual address details
+                for (const address of order.address) {
+                    detailedOrder.address.push({
+                        houseno: address.houseno,
+                        street: address.street,
+                        city: address.city,
+                        state: address.state,
+                        pincode: address.pincode,
+                        type: address.type
                     });
                 }
+        
+                // Add the detailed order to the array
+                detailedOrders.push(detailedOrder);
             }
-    
-            // Fetch address details for the order
-            detailedOrder.address = []; // Initialize an array to store address details
-    
-            // Loop through the address array and push individual address details
-            for (const address of order.address) {
-                detailedOrder.address.push({
-                    houseno: address.houseno,
-                    street: address.street,
-                    city: address.city,
-                    state: address.state,
-                    pincode: address.pincode,
-                    type: address.type
-                });
-            }
-    
-            // Add the detailed order to the array
-            detailedOrders.push(detailedOrder);
+        
+            // Pass the detailed orders to the EJS file
+            res.render("user/vieworder", { detailedOrders });
+        } else {
+            res.redirect("/login")
         }
-    
-        // Pass the detailed orders to the EJS file
-        res.render("user/vieworder", { detailedOrders });
-    } else {
-        res.redirect("/login")
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
     }
     }
 

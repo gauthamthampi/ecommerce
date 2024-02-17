@@ -27,74 +27,106 @@ let signupdata;
 let logindata;
 
 exports.getwishlistremoveprd = async (req, res) => {
-    let productId = req.params.id;
-    let user = await uscollec.findOne({email:req.session.user})
-    let userId = user._id; // Assuming req.user contains the user's ID
-    await wishlistcollec.updateOne(
-        { userId: userId },
-        { $pull: { products: { productId: productId } } }
-    );
-    res.redirect("/viewwishlist/:id");
+    try {
+        let productId = req.params.id;
+        let user = await uscollec.findOne({ email: req.session.user });
+        let userId = user._id; // Assuming req.user contains the user's ID
+        await wishlistcollec.updateOne(
+            { userId: userId },
+            { $pull: { products: { productId: productId } } }
+        );
+        res.redirect("/viewwishlist/:id");
+    } catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
+};
+
+
+exports.getwishlistremoveprd = async (req, res) => {
+    try{
+        let productId = req.params.id;
+        let user = await uscollec.findOne({email:req.session.user})
+        let userId = user._id; // Assuming req.user contains the user's ID
+        await wishlistcollec.updateOne(
+            { userId: userId },
+            { $pull: { products: { productId: productId } } }
+        );
+        res.redirect("/viewwishlist/:id");
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 };
 
 exports.getviewishlist= async(req,res)=>{
-    if(req.session.user){
-        let user = await uscollec.findOne({email:req.session.user})
-        let userId = user._id;
-        let wishlist = await wishlistcollec.findOne({ userId });
-        if(wishlist){
-            let productIds = wishlist.products.map(product => product.productId);
-            let products = await prcollec.find({ _id: { $in: productIds } });
-            res.render("user/wishlist", {
-                wishlist: wishlist,
-                products: products
-            });
+    try{
+        if(req.session.user){
+            let user = await uscollec.findOne({email:req.session.user})
+            let userId = user._id;
+            let wishlist = await wishlistcollec.findOne({ userId });
+            if(wishlist){
+                let productIds = wishlist.products.map(product => product.productId);
+                let products = await prcollec.find({ _id: { $in: productIds } });
+                res.render("user/wishlist", {
+                    wishlist: wishlist,
+                    products: products
+                });
+            }else{
+                res.render("user/wishlist",
+                {wishlist:undefined});
+            }
         }else{
-            res.render("user/wishlist",
-            {wishlist:undefined});
+            res.redirect("/login")
         }
-    }else{
-        res.redirect("/login")
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
     }
 }
 
 exports.getwishlist = async (req, res) => {
-    if (req.session.user) {
-        let user = await uscollec.findOne({email:req.session.user})
-        let userId = user._id;
-        let productId = req.params.id;
-        let wishlist = await wishlistcollec.findOne({ userId });
-        // console.log("wishlist"+wishlist.products);
-
-
-        if (!wishlist) {
-            wishlist = await wishlistcollec.create({
-                userId: userId,
-                products: [{ productId: productId }]
-            });
-            console.log("New wishlist created with product");
-        } else {
-            let checkProduct = await wishlistcollec.findOne({'products.productId':productId})
-            console.log(checkProduct);
-            if (!checkProduct) {
-                wishlist.products.push({ productId: productId });
-                await wishlist.save();
-                console.log("Product added to wishlist");
+    try{
+        if (req.session.user) {
+            let user = await uscollec.findOne({email:req.session.user})
+            let userId = user._id;
+            let productId = req.params.id;
+            let wishlist = await wishlistcollec.findOne({ userId });
+            // console.log("wishlist"+wishlist.products);
+    
+    
+            if (!wishlist) {
+                wishlist = await wishlistcollec.create({
+                    userId: userId,
+                    products: [{ productId: productId }]
+                });
+                console.log("New wishlist created with product");
             } else {
-                console.log("Product already exists");
-            }
-       }
-
-        // Fetch product details for the products in the wishlist
-        let productIds = wishlist.products.map(product => product.productId);
-        let products = await prcollec.find({ _id: { $in: productIds } });
-
-        res.render("user/wishlist", {
-            wishlist: wishlist,
-            products: products
-        });
-    } else {
-        return res.redirect("/login");
+                let checkProduct = await wishlistcollec.findOne({'products.productId':productId})
+                console.log(checkProduct);
+                if (!checkProduct) {
+                    wishlist.products.push({ productId: productId });
+                    await wishlist.save();
+                    console.log("Product added to wishlist");
+                } else {
+                    console.log("Product already exists");
+                }
+           }
+    
+            // Fetch product details for the products in the wishlist
+            let productIds = wishlist.products.map(product => product.productId);
+            let products = await prcollec.find({ _id: { $in: productIds } });
+    
+            res.render("user/wishlist", {
+                wishlist: wishlist,
+                products: products
+            });
+        } else {
+            return res.redirect("/login");
+        }
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
     }
 };
 
@@ -180,24 +212,29 @@ exports.getwishlist = async (req, res) => {
 
 
 exports.getdeleteaddress =  async(req,res)=>{
-    let user = await uscollec.findOne({email:req.session.user})
-    let userId = user._id;
-    let addressId = req.params.id;
-
-    req.session.message = "Address deleted successfully"
-
-    const result = await usercollec.updateOne(
-        { _id: userId },
-        { $pull: { address: { _id: addressId } } }
-      );
-     
-      res.redirect("/userprof")
-       
-     
-
+    try{
+        let user = await uscollec.findOne({email:req.session.user})
+        let userId = user._id;
+        let addressId = req.params.id;
+    
+        req.session.message = "Address deleted successfully"
+    
+        const result = await usercollec.updateOne(
+            { _id: userId },
+            { $pull: { address: { _id: addressId } } }
+          );
+         
+          res.redirect("/userprof")
+           
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
+
 exports.posteditaddress = async (req, res) => {
-    let user = await uscollec.findOne({email:req.session.user})
+    try{
+        let user = await uscollec.findOne({email:req.session.user})
     let id = user._id;
     const editaddress = {
         type: req.body.type,
@@ -228,32 +265,43 @@ exports.posteditaddress = async (req, res) => {
         console.error(err);
         res.status(500).send("Error updating address");
     });
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    } 
 }
 
 exports.postaddaddress = async(req,res)=>{
-    let user = await uscollec.findOne({email:req.session.user})
-    let id = user._id;
-    const addaddress = {
-        type:req.body.type,
-        houseno:req.body.houseno,
-        street:req.body.street,
-        city:req.body.city,
-        state:req.body.state,
-        pincode:req.body.pincode
+    try{
+        let user = await uscollec.findOne({email:req.session.user})
+        let id = user._id;
+        const addaddress = {
+            type:req.body.type,
+            houseno:req.body.houseno,
+            street:req.body.street,
+            city:req.body.city,
+            state:req.body.state,
+            pincode:req.body.pincode
+        }
+        // 
+        await uscollec.findByIdAndUpdate(id,{
+          $push:{
+            'address':addaddress
+          }
+        })
+        console.log(addaddress);
+        const updated = await uscollec.findById(id)
+        nameext = updated;
+        res.redirect("/userprof")
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
     }
-    // 
-    await uscollec.findByIdAndUpdate(id,{
-      $push:{
-        'address':addaddress
-      }
-    })
-    console.log(addaddress);
-    const updated = await uscollec.findById(id)
-    nameext = updated;
-    res.redirect("/userprof")
 }
 
 exports.postuseredit = async(req,res)=>{
+    try{
         let user = await uscollec.findOne({email:req.session.user})
         let id = user._id;
         const newdata = {
@@ -272,201 +320,258 @@ exports.postuseredit = async(req,res)=>{
         nameext = updated;
         console.log(updated);
         res.redirect("/userprof");
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }  
     }
 
 
 exports.getuserprof = async(req,res) => {
-    if(req.session.user){
-        let user = await uscollec.findOne({email:req.session.user}) 
-        const id = user._id;
-        const message = req.session.message;
-        delete req.session.message;
-        // Clear the message from the session
+    try{
+        if(req.session.user){
+            let user = await uscollec.findOne({email:req.session.user}) 
+            const id = user._id;
+            const message = req.session.message;
+            delete req.session.message;
+            // Clear the message from the session
+           
+          
+            const userData = await uscollec.findById(id)
+            res.render("user/userprof",{
+            user:`${user.firstname} ${user.secondname}`,
+            userfst:user.firstname,
+            email:user.email,
+            usersec:user.secondname,
+            userData:userData,
+            message:message
+        })
        
-      
-        const userData = await uscollec.findById(id)
-        res.render("user/userprof",{
-        user:`${user.firstname} ${user.secondname}`,
-        userfst:user.firstname,
-        email:user.email,
-        usersec:user.secondname,
-        userData:userData,
-        message:message
-    })
-   
-   }else{
-    res.redirect("/login")
-   }
-   
-
+       }else{
+        res.redirect("/login")
+       }    
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
 
 exports.getHomepage = async (req, res) => {
-    let user = await uscollec.findOne({email:req.session.user})
-    if(req.session.user){
-        res.render("landingpage",{
-            user:user
-        })
-}else{
-    res.render("landingpage")
-}
+    try{
+        let user = await uscollec.findOne({email:req.session.user})
+        if(req.session.user){
+            res.render("landingpage",{
+                user:user
+            })
+    }else{
+        res.render("landingpage")
+    }
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
 
 exports.getLogin = (req, res) => {
-  if(!req.session.user){
-  let message = req.query.message;
-  res.render("login.ejs",{message});
-}else{
-    res.redirect("/homepage")
-}
+    try{
+        if(!req.session.user){
+            let message = req.query.message;
+            res.render("login.ejs",{message});
+          }else{
+              res.redirect("/homepage")
+          }
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
+  
 }
 
 //post
 exports.postLogin = async (req, res) => {
-    const userdata = {
-        email:req.body.email,
-        password:req.body.password
-    }
-    
-    const checkmail = await usercollec.findOne({email:userdata.email});
-    if(checkmail){
-        const userblock = await usercollec.findOne({email:userdata.email,isBlocked :"Blocked"});
-       if(userblock){
-        res.render("login",{
-            incorrect:"Ops!! Entry restricted"
-        })
-       }else{
-        const passwordMatch = await bcrypt.compare(userdata.password, checkmail.password);
-        if(passwordMatch){
-            nameext = await usercollec.findOne({email:userdata.email})
-            let user = await usercollec.findOne({email:userdata.email})
-            req.session.user = req.body.email;
-           res.render("landingpage",{
-               user:user
-           });
+    try{
+        const userdata = {
+            email:req.body.email,
+            password:req.body.password
+        }
+        
+        const checkmail = await usercollec.findOne({email:userdata.email});
+        if(checkmail){
+            const userblock = await usercollec.findOne({email:userdata.email,isBlocked :"Blocked"});
+           if(userblock){
+            res.render("login",{
+                incorrect:"Ops!! Entry restricted"
+            })
+           }else{
+            const passwordMatch = await bcrypt.compare(userdata.password, checkmail.password);
+            if(passwordMatch){
+                nameext = await usercollec.findOne({email:userdata.email})
+                let user = await usercollec.findOne({email:userdata.email})
+                req.session.user = req.body.email;
+               res.render("landingpage",{
+                   user:user
+               });
+            }else{
+                res.render("login",{
+                    incorrectpass:"Incorrect password"
+                })
+            }
+          }
         }else{
             res.render("login",{
-                incorrectpass:"Incorrect password"
+                incorrectmail:"Invalid mail id!"
             })
         }
-      }
-    }else{
-        res.render("login",{
-            incorrectmail:"Invalid mail id!"
-        })
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
     }
-
 }
+
 exports.getforgotpass = (req,res)=>{
-    res.render("user/forgotpassmail")
+    try{
+        res.render("user/forgotpassmail")
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
 let emailforgotpass;
 exports.postforgotpass = async(req,res)=>{
+    try{
+        const mail = {
+            email:req.body.email
+        }
     
-    const mail = {
-        email:req.body.email
-    }
-
-     emailforgotpass = mail.email;
-
-    const user = await usercollec.findOne({email:mail.email});
-    console.log(user);
-    if(user){
-        res.redirect("/forgotpassotp")
-       
-    }else{
-        res.send("Email not registered")
+         emailforgotpass = mail.email;
+    
+        const user = await usercollec.findOne({email:mail.email});
+        console.log(user);
+        if(user){
+            res.redirect("/forgotpassotp")
+           
+        }else{
+            res.send("Email not registered")
+        }
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
     }
 }
 
 exports.getOtpVerificationforgotpass = (req, res) => {
-    function generateOTP() {
-        let digits = '0123456789';
-        let OTP = '';
-        for (let i = 0; i < 6; i++) {
-            OTP += digits[Math.floor(Math.random() * 10)];
-        }
-        return OTP;
-     }
+    try{
+        function generateOTP() {
+            let digits = '0123456789';
+            let OTP = '';
+            for (let i = 0; i < 6; i++) {
+                OTP += digits[Math.floor(Math.random() * 10)];
+            }
+            return OTP;
+         }
+         
+         otp = generateOTP();
+        const expiry = new Date(Date.now() + 5 * 60 * 1000);
+       
+        const transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: process.env.EMAIL,
+            pass: process.env.PASSWORD,
+          },
+        });
      
-     otp = generateOTP();
-    const expiry = new Date(Date.now() + 5 * 60 * 1000);
-   
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASSWORD,
-      },
-    });
- 
-    const mailOptions = {
-      from:process.env.EMAIL,
-      to: emailforgotpass,
-      subject: 'OTP for setting new password',
-      text: `Your OTP for recovering  is ${otp}. "We care the security"-Gtimes`,
-    };
-    otpcode = otp;
-    transporter.sendMail(mailOptions, (error, info, expiry) => {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('Email sent: ' + info.response);
-      }
-    });
-    console.log(otp);
-    res.render("user/otpforgotpass")
+        const mailOptions = {
+          from:process.env.EMAIL,
+          to: emailforgotpass,
+          subject: 'OTP for setting new password',
+          text: `Your OTP for recovering  is ${otp}. "We care the security"-Gtimes`,
+        };
+        otpcode = otp;
+        transporter.sendMail(mailOptions, (error, info, expiry) => {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+        });
+        console.log(otp);
+        res.render("user/otpforgotpass")
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
+    
 }
 
 exports.postOtpVerificationforgotpass = (req, res) => {
-    const otpchar = {
-        otp1:req.body.otp1,
-        otp2:req.body.otp2,
-        otp3:req.body.otp3,
-        otp4:req.body.otp4,
-        otp5:req.body.otp5,
-        otp6:req.body.otp6,
-    }
-    const otp = `${otpchar.otp1}${otpchar.otp2}${otpchar.otp3}${otpchar.otp4}${otpchar.otp5}${otpchar.otp6}`
-    if(otpcode===otp){       
-        res.redirect("/changepassword")
-    }else{
-        res.render("user/otpforgotpass",{
-            incorrect:"Invalid OTP"
-        })
+    try{
+        const otpchar = {
+            otp1:req.body.otp1,
+            otp2:req.body.otp2,
+            otp3:req.body.otp3,
+            otp4:req.body.otp4,
+            otp5:req.body.otp5,
+            otp6:req.body.otp6,
+        }
+        const otp = `${otpchar.otp1}${otpchar.otp2}${otpchar.otp3}${otpchar.otp4}${otpchar.otp5}${otpchar.otp6}`
+        if(otpcode===otp){       
+            res.redirect("/changepassword")
+        }else{
+            res.render("user/otpforgotpass",{
+                incorrect:"Invalid OTP"
+            })
+        }
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
     }
     }
 
 exports.getchangepassword = (req,res)=>{
-    res.render("user/forgotpasspass")
+    try{
+        res.render("user/forgotpasspass")
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
+    
 }
 
 exports.postchangepassword = async(req,res)=>{
-    const newpass = {
-        pass:req.body.password,
-        conpass:req.body.confirmpass
-    }
-
-    const hashedPassword = await bcrypt.hash(newpass.pass, saltRounds); 
-    const newpassword ={
-        password: hashedPassword
-    };
-
-    if(newpass.pass===newpass.conpass){
-
-        await uscollec.updateOne(
-            {email:emailforgotpass},
-            {$set:{password:newpassword.password}}).exec()
-            .then(()=>{
-                console.log("Password changed successfull"+emailforgotpass);
-                res.render("login",{
-                incorrect:"Password changed successfully"
+    try{
+        const newpass = {
+            pass:req.body.password,
+            conpass:req.body.confirmpass
+        }
+    
+        const hashedPassword = await bcrypt.hash(newpass.pass, saltRounds); 
+        const newpassword ={
+            password: hashedPassword
+        };
+    
+        if(newpass.pass===newpass.conpass){
+    
+            await uscollec.updateOne(
+                {email:emailforgotpass},
+                {$set:{password:newpassword.password}}).exec()
+                .then(()=>{
+                    console.log("Password changed successfull"+emailforgotpass);
+                    res.render("login",{
+                    incorrect:"Password changed successfully"
+                    })
+                }).catch(err=>{
+                    console.log(err);
                 })
-            }).catch(err=>{
-                console.log(err);
-            })
-            
-            }
+                
+                }
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
     }
 
 // if(req.body.password===req.body.confirmpass){
@@ -482,11 +587,16 @@ exports.postchangepassword = async(req,res)=>{
 // }
 
 exports.getSignup = (req, res) => {
-  if(!req.session.user){
-    res.render("signup.ejs");
-  }else{
-    res.redirect("/homepage")
-  }
+    try{
+        if(!req.session.user){
+            res.render("signup.ejs");
+          }else{
+            res.redirect("/homepage")
+          }
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
 
 const credential = {
@@ -496,135 +606,53 @@ const credential = {
 
 //post
 exports.postSignup = async (req, res) => {
-    const userData = {
-        firstname:req.body.firstname,
-        secondname:req.body.secondname,
-        email:req.body.email,
-        password:req.body.password
-    }
-
-    
-    
-    const hashedPassword = await bcrypt.hash(userData.password, saltRounds); 
-        const user ={
-            firstname: userData.firstname,
-            secondname: userData.secondname,
-            email: userData.email,
-            password: hashedPassword
-        };
-        if(req.body.referalcode!=undefined){
-           const referal = req.body.referalcode;
-           const refuser = await uscollec.findOne({referal:referal})
-           refuser.wallet = 100;
-           await refuser.save();
-           user.wallet = 50;
+    try{
+        const userData = {
+            firstname:req.body.firstname,
+            secondname:req.body.secondname,
+            email:req.body.email,
+            password:req.body.password
         }
-
+    
         
-        signupdata = user;
-    const checkmail = await usercollec.findOne({email:userData.email});
-    //const checknum = usercollec.findOne({})
-    if(checkmail){
-        //const checknum = usercollec.findOne({phone:userData.phone});
-       res.render("signup",{
-        incorrectmail:"User already exists"
-       })
-    }else{
-        res.redirect("/otpverif")
-    }  
+        
+        const hashedPassword = await bcrypt.hash(userData.password, saltRounds); 
+            const user ={
+                firstname: userData.firstname,
+                secondname: userData.secondname,
+                email: userData.email,
+                password: hashedPassword
+            };
+            if(req.body.referalcode!=undefined){
+               const referal = req.body.referalcode;
+               const refuser = await uscollec.findOne({referal:referal})
+               refuser.wallet = 100;
+               await refuser.save();
+               user.wallet = 50;
+            }
+    
+            
+            signupdata = user;
+        const checkmail = await usercollec.findOne({email:userData.email});
+        //const checknum = usercollec.findOne({})
+        if(checkmail){
+            //const checknum = usercollec.findOne({phone:userData.phone});
+           res.render("signup",{
+            incorrectmail:"User already exists"
+           })
+        }else{
+            res.redirect("/otpverif")
+        }  
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
+    
 }
 
 exports.getOtpVerification = (req, res) => {
-    function generateOTP() {
-        let digits = '0123456789';
-        let OTP = '';
-        for (let i = 0; i < 6; i++) {
-            OTP += digits[Math.floor(Math.random() * 10)];
-        }
-        return OTP;
-     }
-     
-     otp = generateOTP();
-    const expiry = new Date(Date.now() + 5 * 60 * 1000);
-   
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASSWORD,
-      },
-    });
- 
-    const mailOptions = {
-      from:process.env.EMAIL,
-      to: signupdata.email,
-      subject: 'OTP for registration',
-      text: `Your OTP for registration is ${otp}`,
-    };
-    otpcode = otp;
-    transporter.sendMail(mailOptions, (error, info, expiry) => {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('Email sent: ' + info.response);
-      }
-    });
-    console.log(otp);
-    res.render("user/otp")
-    const otpdata = {
-        email : signupdata.email,
-        otp: otp,
-        expiry: expiry
-    }
-    // const check = otpcoll.find({email:otpdata.email}).exec();
-    // if(check){
-    //     otpcoll.findByEmailAndUpdate(otpdata.email,{
-    //         otp:otp,
-    //         expiry:expiry
-    //     })
-    // }else{
-    // otpcoll.insertMany(otpdata)
-    // .then(()=>{
-    //     console.log(otpdata);
-    //     res.render("user/otp")
-    // }).catch(err=>{
-    //     console.log(err);
-    // })
-    // }
-}
-
-exports.postOtpVerification = (req, res) => {
-    const otpchar = {
-        otp1:req.body.otp1,
-        otp2:req.body.otp2,
-        otp3:req.body.otp3,
-        otp4:req.body.otp4,
-        otp5:req.body.otp5,
-        otp6:req.body.otp6,
-    }
-    const otp = `${otpchar.otp1}${otpchar.otp2}${otpchar.otp3}${otpchar.otp4}${otpchar.otp5}${otpchar.otp6}`
-    if(otpcode===otp){
-        if(signupdata.email===credential.username){
-        signupdata.isAdmin = true;
-        }
-        usercollec.insertMany(signupdata)
-        .then(()=>{
-            console.log(signupdata);
-            res.render("login",{
-                incorrect:"OTP Veified. Log in to continue.."
-            })
-        }).catch(err=>{
-            console.log(err);
-        })
-    }else{
-        res.render("user/otp",{
-            incorrect:"Invalid OTP"
-        })
-    }
-    }
-
-
-    exports.resendgetOtpVerification = (req, res) => {
+    try{
         function generateOTP() {
             let digits = '0123456789';
             let OTP = '';
@@ -660,7 +688,7 @@ exports.postOtpVerification = (req, res) => {
           }
         });
         console.log(otp);
-        res.render("user/resendotp")
+        res.render("user/otp")
         const otpdata = {
             email : signupdata.email,
             otp: otp,
@@ -676,14 +704,21 @@ exports.postOtpVerification = (req, res) => {
         // otpcoll.insertMany(otpdata)
         // .then(()=>{
         //     console.log(otpdata);
-        //     res.render("user/resendotp")
+        //     res.render("user/otp")
         // }).catch(err=>{
         //     console.log(err);
         // })
         // }
-    }
 
-    exports.resendpostOtpVerification = (req, res) => {
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
+    
+}
+
+exports.postOtpVerification = (req, res) => {
+    try{
         const otpchar = {
             otp1:req.body.otp1,
             otp2:req.body.otp2,
@@ -694,6 +729,9 @@ exports.postOtpVerification = (req, res) => {
         }
         const otp = `${otpchar.otp1}${otpchar.otp2}${otpchar.otp3}${otpchar.otp4}${otpchar.otp5}${otpchar.otp6}`
         if(otpcode===otp){
+            if(signupdata.email===credential.username){
+            signupdata.isAdmin = true;
+            }
             usercollec.insertMany(signupdata)
             .then(()=>{
                 console.log(signupdata);
@@ -704,9 +742,114 @@ exports.postOtpVerification = (req, res) => {
                 console.log(err);
             })
         }else{
-            res.render("user/resendotp",{
+            res.render("user/otp",{
                 incorrect:"Invalid OTP"
             })
+        }
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
+    
+    }
+
+    exports.resendgetOtpVerification = (req, res) => {
+        try{
+            function generateOTP() {
+                let digits = '0123456789';
+                let OTP = '';
+                for (let i = 0; i < 6; i++) {
+                    OTP += digits[Math.floor(Math.random() * 10)];
+                }
+                return OTP;
+             }
+             
+             otp = generateOTP();
+            const expiry = new Date(Date.now() + 5 * 60 * 1000);
+           
+            const transporter = nodemailer.createTransport({
+              service: 'gmail',
+              auth: {
+                user: process.env.EMAIL,
+                pass: process.env.PASSWORD,
+              },
+            });
+         
+            const mailOptions = {
+              from:process.env.EMAIL,
+              to: signupdata.email,
+              subject: 'OTP for registration',
+              text: `Your OTP for registration is ${otp}`,
+            };
+            otpcode = otp;
+            transporter.sendMail(mailOptions, (error, info, expiry) => {
+              if (error) {
+                console.log(error);
+              } else {
+                console.log('Email sent: ' + info.response);
+              }
+            });
+            console.log(otp);
+            res.render("user/resendotp")
+            const otpdata = {
+                email : signupdata.email,
+                otp: otp,
+                expiry: expiry
+            }
+            // const check = otpcoll.find({email:otpdata.email}).exec();
+            // if(check){
+            //     otpcoll.findByEmailAndUpdate(otpdata.email,{
+            //         otp:otp,
+            //         expiry:expiry
+            //     })
+            // }else{
+            // otpcoll.insertMany(otpdata)
+            // .then(()=>{
+            //     console.log(otpdata);
+            //     res.render("user/resendotp")
+            // }).catch(err=>{
+            //     console.log(err);
+            // })
+            // }
+
+        }catch (err) {
+            console.error(err);
+            res.redirect("/error");
+        }
+        
+    }
+
+    exports.resendpostOtpVerification = (req, res) => {
+        try{
+            const otpchar = {
+                otp1:req.body.otp1,
+                otp2:req.body.otp2,
+                otp3:req.body.otp3,
+                otp4:req.body.otp4,
+                otp5:req.body.otp5,
+                otp6:req.body.otp6,
+            }
+            const otp = `${otpchar.otp1}${otpchar.otp2}${otpchar.otp3}${otpchar.otp4}${otpchar.otp5}${otpchar.otp6}`
+            if(otpcode===otp){
+                usercollec.insertMany(signupdata)
+                .then(()=>{
+                    console.log(signupdata);
+                    res.render("login",{
+                        incorrect:"OTP Veified. Log in to continue.."
+                    })
+                }).catch(err=>{
+                    console.log(err);
+                })
+            }else{
+                res.render("user/resendotp",{
+                    incorrect:"Invalid OTP"
+                })
+            }    
+
+        }catch (err) {
+            console.error(err);
+            res.redirect("/error");
         }
         
         }
@@ -766,7 +909,7 @@ exports.getMens = async (req, res) => {
             });
         } catch (err) {
             console.error(err);
-            res.status(500).send('Internal Server Error');
+            res.redirect("/error");
         }
     };
 
@@ -782,6 +925,7 @@ exports.getMens = async (req, res) => {
 
 
 exports.getMensPreview = (req, res) => {
+    try{
         let id = req.params.id;
         prcollec.findById(id)
         .then(product=>{
@@ -790,7 +934,11 @@ exports.getMensPreview = (req, res) => {
                 
             });
         })
-  
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
 
 exports.getWomens= async(req, res) => {
@@ -924,15 +1072,22 @@ exports.getSmart= async(req, res) => {
 
 
 exports.userlogout = (req,res)=>{
-    if(req.session.user){
-    req.session.user = false;
-    res.redirect("/homepage")
+    try{
+        if(req.session.user){
+            req.session.user = false;
+            res.redirect("/homepage")
+        
+        }else{
+            res.redirect("/login")
+        }
 
-}else{
-    res.redirect("/login")
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
+    
 }
-}
 
-
+ 
 
 

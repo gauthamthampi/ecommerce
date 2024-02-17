@@ -25,7 +25,6 @@ router.get("/deleteproduct/:id", isAdminAuthenticated,adminController.getdeleteP
 // router.get("/addproducts", adminController.getaddproduct);
 // router.post("/addproduct", upload, adminController.postaddproduct);
 router.get("/adminusers",  isAdminAuthenticated,adminController.getadminusers);
-router.get("/adduser",  isAdminAuthenticated,adminController.getadduser);
 router.post("/adduser",  isAdminAuthenticated,adminController.postadduser);
 router.get("/edituser/:id",  isAdminAuthenticated,adminController.getedituser);
 router.post("/edituser/:id", isAdminAuthenticated, adminController.postedituser);

@@ -18,19 +18,26 @@ const credential = {
 };
 
 exports.deletecoupon = async(req,res)=>{
-    let couponid = req.params.id;
-    await couponcollec.findByIdAndDelete(couponid)
-    .then(()=>{
-    console.log("Coupon deleted successfully,id:"+couponid);
-    })
-    .catch((err)=>{
-    console.log("error deleting coupon"+err);
-    })
-    res.redirect("/admincoupons")
+    try{
+        let couponid = req.params.id;
+        await couponcollec.findByIdAndDelete(couponid)
+        .then(()=>{
+        console.log("Coupon deleted successfully,id:"+couponid);
+        })
+        .catch((err)=>{
+        console.log("error deleting coupon"+err);
+        })
+        res.redirect("/admincoupons")
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
 
 exports.addnewcoupon = async(req,res)=>{
-    let expiryDate = new Date(req.body.expirydate);
+    try{
+        let expiryDate = new Date(req.body.expirydate);
     console.log(expiryDate);
     let year = expiryDate.getFullYear();
     let month = String(expiryDate.getMonth() + 1).padStart(2, '0');
@@ -45,19 +52,27 @@ exports.addnewcoupon = async(req,res)=>{
         expirydate:formattedExpiryDate,
         discount:req.body.discount
     }
-
-    
-
     await couponcollec.create(newcoupon);
     res.redirect("/admincoupons")
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    } 
 }
 
 exports.getadmincouponmanagement = async(req,res)=>{
-    let coupon = await couponcollec.find({})
-    res.render("admin/admcouponmanagement",{
-        coupon
-})
+    try{
+        let coupon = await couponcollec.find({})
+        res.render("admin/admcouponmanagement",{
+            coupon
+    })
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 };
+
 exports.getadmindashboard = async (req, res) => {
     try {
         const totalProducts = await prcollec.countDocuments({});
@@ -492,8 +507,8 @@ async function getSalesReport(interval) {
 
 
   exports.getSalesReport = async (req, res) => {
-    const { interval } = req.params;
-  
+    try{
+      const { interval } = req.params;
     try {
       const salesReport = await getSalesReport(interval);
       res.render('admin/adminsales', { salesReport, selectedInterval: req.params.interval || 'day' });
@@ -501,131 +516,174 @@ async function getSalesReport(interval) {
       console.error('Error:', error);
       res.status(500).send('Internal Server Error');
     }
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
+    
   };
 
 exports.postupdateOrderStatus = async(req,res)=>{
-    let orderId = req.params.id;
-    const newStatus = req.body.newStatus;
-
-     const order = await ordcollec.findById(orderId);
-
-     order.orderStatus = newStatus;
-
-     await order.save();
-
+    try{
+        let orderId = req.params.id;
+        const newStatus = req.body.newStatus;
     
-     res.redirect('/adminorders?message=Order status updated successfully'); // Change this to your actual route
-
+         const order = await ordcollec.findById(orderId);
     
+         order.orderStatus = newStatus;
+    
+         await order.save();
+    
+        
+         res.redirect('/adminorders?message=Order status updated successfully'); // Change this to your actual route
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
+
 exports.getadminorders = async(req,res)=>{
+    try{
+        const orders = await ordcollec.find();
 
-    const orders = await ordcollec.find();
-
-    const { message, error } = req.query;
-
-        
-        const ordersWithProductDetails = [];
-
-        
-        for (const order of orders) {
+        const { message, error } = req.query;
+    
             
-            const productDetails = [];
-
+            const ordersWithProductDetails = [];
+    
             
-            for (const item of order.items) {
+            for (const order of orders) {
                 
-                const product = await prcollec.findById(item.productId);
-
-                // If product is found, add its details to the array
-                if (product) {
-                    productDetails.push({
-                        productName: product.modelname,
-                        colour: product.colour,
-                        category: product.category,
-                        // Add more properties as needed
-                    });
+                const productDetails = [];
+    
+                
+                for (const item of order.items) {
+                    
+                    const product = await prcollec.findById(item.productId);
+    
+                    // If product is found, add its details to the array
+                    if (product) {
+                        productDetails.push({
+                            productName: product.modelname,
+                            colour: product.colour,
+                            category: product.category,
+                            // Add more properties as needed
+                        });
+                    }
                 }
+    
+                // Add the order with product details to the array
+                ordersWithProductDetails.push({
+                    order: order,
+                    productDetails: productDetails,
+                });
             }
+    
+            // Render the template with the orders and product details
+            res.render('admin/adminorders', { ordersWithProductDetails ,message,error });    
 
-            // Add the order with product details to the array
-            ordersWithProductDetails.push({
-                order: order,
-                productDetails: productDetails,
-            });
-        }
-
-        // Render the template with the orders and product details
-        res.render('admin/adminorders', { ordersWithProductDetails ,message,error });
-
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
 
 exports.getadminLog = (req, res) => {
-    if(!req.session.admin){
-    res.render("admin/admlogin");
-    }else{
-        res.redirect("/adminhome")
+    try{
+        if(!req.session.admin){
+            res.render("admin/admlogin");
+            }else{
+                res.redirect("/adminhome")
+            }
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
     }
 };
 
 exports.postadminlog = (req,res)=>{
-    if(req.body.email===credential.username && req.body.password===credential.password){
-        req.session.admin = req.body.email;
-        req.session.admin = true
-        uscollec.find({}).exec()
-            .then(users =>{
-                res.render("admin/adminhome")
-                    
+    try{
+        if(req.body.email===credential.username && req.body.password===credential.password){
+            req.session.admin = req.body.email;
+            req.session.admin = true
+            uscollec.find({}).exec()
+                .then(users =>{
+                    res.render("admin/adminhome")
+                        
+                    })
+               
+                .catch(err=>{
+                    res.send(err)
                 })
-           
-            .catch(err=>{
-                res.send(err)
-            })
-            
-        }else{
-            res.send("Invalid details")
-        }
+                
+            }else{
+                res.send("Invalid details")
+            }
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    } 
 }
 
 exports.getadminHome = (req, res) => {
-    if(req.session.admin){
-    uscollec.find({}).exec()
-        .then(users => {
-            res.render("admin/adminhome");
-        })
-        .catch(err => {
-            res.send(err);
-        });
-    }else{
-        res.redirect("/adminlog")
-    }
+    try{
+        if(req.session.admin){
+            uscollec.find({}).exec()
+                .then(users => {
+                    res.render("admin/adminhome");
+                })
+                .catch(err => {
+                    res.send(err);
+                });
+            }else{
+                res.redirect("/adminlog")
+            }
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }  
 };
 
 exports.adminProducts = (req, res) => {
-    if(req.session.admin){
-    prcollec.find({}).exec()
-        .then(product => {
-            res.render("admin/adminproducts", {
-                product: product
-            });
-        })
-        .catch(err => {
-            res.send(err);
-        });
-    }else{
-        res.redirect("/adminlog")
+    try{
+        if(req.session.admin){
+            prcollec.find({}).exec()
+                .then(product => {
+                    res.render("admin/adminproducts", {
+                        product: product
+                    });
+                })
+                .catch(err => {
+                    res.send(err);
+                });
+            }else{
+                res.redirect("/adminlog")
+            }
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
     }
 };
 
 exports.getaddProducts = async(req, res) => {
-  if(req.session.admin){
-    const category = await categorycollec.distinct("name");
-    res.render("admin/addproducts",{
-        category
-    })
-  }else{
-    res.redirect("/adminlogin")
-  }
+    try{
+        if(req.session.admin){
+            const category = await categorycollec.distinct("name");
+            res.render("admin/addproducts",{
+                category
+            })
+          }else{
+            res.redirect("/adminlogin")
+          }
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
 
 exports.postaddproducts = async (req, res) => {
@@ -742,22 +800,27 @@ exports.postaddproducts = async (req, res) => {
 //  }
 
 exports.geteditproduct = (req,res) =>{
-    if(req.session.admin){
-    let id = req.params.id;
-    prcollec.findById(id).exec()
-    .then(product=>{
-        res.render("admin/editproducts",{
-        product:product
-        })
-    })
-    .catch(err => {
-        console.log(err);
-    })
-
-}else{
-    res.render("admin/adminlog")
-
-}
+    try{
+        if(req.session.admin){
+            let id = req.params.id;
+            prcollec.findById(id).exec()
+            .then(product=>{
+                res.render("admin/editproducts",{
+                product:product
+                })
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        
+        }else{
+            res.render("admin/adminlog")
+        
+        }
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
 
 // exports.posteditproduct = (req,res) =>{
@@ -797,7 +860,8 @@ exports.geteditproduct = (req,res) =>{
 // }
 
 exports.posteditproduct = (req, res) => {
-    let id = req.params.id;
+    try{
+        let id = req.params.id;
     const newImageArray = [];
 
     // Fetch existing images from the database
@@ -846,6 +910,11 @@ exports.posteditproduct = (req, res) => {
             res.send(err);
             console.log(err);
         });
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 };
 
 
@@ -871,31 +940,36 @@ exports.postdeleteimage = async (req, res) => {
 };
 
 exports.getdeleteProducts= (req,res) =>{
-    if(req.session.admin){
-    let id = req.params.id;
-    prcollec.findByIdAndDelete(id).exec()
-    .then(product=>{
-        prcollec.find({}).exec()
-        .then(product=>{
-            res.render("admin/adminproducts",{
-            product:product,
-            success:"Product deleted sucessfully!!"
-        })
-    })
-        }).catch((err)=>{
-            console.log(err);
-        })
-}else{
-    res.redirect("/adminlog")
-
+    try{
+        if(req.session.admin){
+            let id = req.params.id;
+            prcollec.findByIdAndDelete(id).exec()
+            .then(product=>{
+                prcollec.find({}).exec()
+                .then(product=>{
+                    res.render("admin/adminproducts",{
+                    product:product,
+                    success:"Product deleted sucessfully!!"
+                })
+            })
+                }).catch((err)=>{
+                    console.log(err);
+                })
+        }else{
+            res.redirect("/adminlog")
+        
+        }
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    } 
 }
-}
 
-exports.getaddproduct = (req,res)=>{
+// exports.getaddproduct = (req,res)=>{
   
-    res.render("admin/addproducts")
+//     res.render("admin/addproducts")
 
-}
+// }
 
 // exports.postaddproduct = upload,(req,res)=>{
 //     const imageArray = [];
@@ -934,42 +1008,48 @@ exports.getaddproduct = (req,res)=>{
 // }
 
 exports.getadminusers = (req,res)=>{
-    uscollec.find({}).exec()
+    try{
+        uscollec.find({}).exec()
     .then(users=>{
         res.render("admin/adminusers",{
             users:users
         });
     })
-    
-}
-
-exports.getadduser = (req,res)=>{
-    res.render("admin/adduser")
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
 
 exports.postadduser = async(req,res)=>{
-    const userData = {
-        firstname:req.body.firstname,
-        secondname:req.body.secondname,
-        email:req.body.email,
-        password:req.body.password
+    try{
+        const userData = {
+            firstname:req.body.firstname,
+            secondname:req.body.secondname,
+            email:req.body.email,
+            password:req.body.password
+        }
+    
+        const checkmail = await uscollec.findOne({email:userData.email});
+        //const checknum = usercollec.findOne({})
+        if(checkmail){
+            //const checknum = usercollec.findOne({phone:userData.phone});
+           res.send("User already exists")
+        }else{
+           const newdata = await uscollec.insertMany(userData);
+           console.log(userData);
+           res.render("login");
+        }  
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
     }
-
-    const checkmail = await uscollec.findOne({email:userData.email});
-    //const checknum = usercollec.findOne({})
-    if(checkmail){
-        //const checknum = usercollec.findOne({phone:userData.phone});
-       res.send("User already exists")
-    }else{
-       const newdata = await uscollec.insertMany(userData);
-       console.log(userData);
-       res.render("login");
-    }  
-  
 }
 
+
 exports.getedituser =(req,res)=>{
-    let id = req.params.id;
+    try{
+        let id = req.params.id;
   uscollec.findById(id).exec()
     .then(users=>{
         res.render("admin/edituser",{
@@ -979,10 +1059,16 @@ exports.getedituser =(req,res)=>{
     .catch(err => {
         console.log(err);
     })
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }    
 }
 
+
 exports.postedituser =async(req,res)=>{
-    let id = req.params.id;
+    try{
+        let id = req.params.id;
     console.log(id);
     try {
        let isBlocked = req.body.isBlocked;
@@ -992,30 +1078,20 @@ exports.postedituser =async(req,res)=>{
             email: req.body.email,
             isBlocked: req.body.isBlocked
         }, { new: true }).exec();
-
-        // if (isBlocked==="Blocked") {
-        //     // If the user is blocked, destroy the session to log them out
-        //     req.session.destroy((err) => {
-        //         if (err) {
-        //             console.error('Error destroying session:', err);
-        //             res.status(500).send('Internal Server Error');
-        //         } else {
-        //             console.log('Session destroyed successfully');
-        //             // Redirect or send response as needed
-        //         }
-        //     });
-        // }
-
-       
         const users = await uscollec.find({});
         res.render("admin/adminusers", { users: users });
     } catch(err) {
         console.log(err);
     }
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
 
 exports.getdeleteuser =(req,res)=>{
-    let id = req.params.id;
+    try{
+        let id = req.params.id;
     uscollec.findByIdAndDelete(id).exec()
     .then(users=>{
         uscollec.find({}).exec()
@@ -1029,16 +1105,24 @@ exports.getdeleteuser =(req,res)=>{
     .catch(err=>{
         console.log(err);
     })
+
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
 
 exports.admcategory = async(req,res)=>{
-    const category = await categorycollec.find({});
-   
-   
+    try{
+        const category = await categorycollec.find({});
       res.render("admin/admcategory",{
         category
 
       })
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
 
 exports.postcategorylisting = async (req, res) => {
@@ -1057,72 +1141,86 @@ exports.postcategorylisting = async (req, res) => {
 };
 
 exports.postcategoryoffers = async(req,res)=>{
-    const category = req.params.category;
-    const offerPercentage = parseInt(req.body.categoryoffers);
-
-    try {
-        // Find products in the specified category
-        const products = await prcollec.find({ category: category });
-        const categorydb = await categorycollec.findOne({name:category})
-       
-
-        // Update offerprice for each product
-        for (const product of products) {
-            // Calculate the offer price based on the selected percentage
-            const totalPrice = product.price;
-            let offerPrice;
-            if(offerPercentage!=0){
-             offerPrice = totalPrice - (totalPrice * (offerPercentage / 100));
-             offerPrice = Math.round(offerPrice);
-             categorydb.offer = "Applied"
-           }else{
-            offerPrice = 0;
+    try{
+        const category = req.params.category;
+        const offerPercentage = parseInt(req.body.categoryoffers);
+    
+        try {
+            // Find products in the specified category
+            const products = await prcollec.find({ category: category });
+            const categorydb = await categorycollec.findOne({name:category})
+           
+    
+            // Update offerprice for each product
+            for (const product of products) {
+                // Calculate the offer price based on the selected percentage
+                const totalPrice = product.price;
+                let offerPrice;
+                if(offerPercentage!=0){
+                 offerPrice = totalPrice - (totalPrice * (offerPercentage / 100));
+                 offerPrice = Math.round(offerPrice);
+                 categorydb.offer = "Applied"
+               }else{
+                offerPrice = 0;
+                categorydb.offer = "Not applied";
+               }
+               
+                
+                // Update the offerprice in the product document
+                product.offerprice = offerPrice;
+                
+    
+                // Save the changes to the database
+                await product.save();
+               
+            }
+           // Update offer status for the category itself
+           if (offerPercentage != 0) {
+            categorydb.offer = "Applied";
+        } else {
             categorydb.offer = "Not applied";
-           }
-           
-            
-            // Update the offerprice in the product document
-            product.offerprice = offerPrice;
-            
-
-            // Save the changes to the database
-            await product.save();
-           
         }
-       // Update offer status for the category itself
-       if (offerPercentage != 0) {
-        categorydb.offer = "Applied";
-    } else {
-        categorydb.offer = "Not applied";
-    }
+    
+        // Save the changes to the database for the category
+        await categorydb.save();
+            res.redirect("/admcategory");
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Error applying offer');
+        }
 
-    // Save the changes to the database for the category
-    await categorydb.save();
-        res.redirect("/admcategory");
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error applying offer');
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
     }
 }
 
 exports.postnewcategory = (req,res)=>{
-    const category = {
-        name:req.body.categoryname
+    try{
+        const category = {
+            name:req.body.categoryname
+        }
+        categorycollec.create(category)
+        // prcollec.insertMany(category)
+        .then(()=>{
+            console.log(category+"is added into database");
+            res.redirect("/admcategory")
+        }).catch((err)=>{
+            console.log(err);
+        })
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
     }
-    categorycollec.create(category)
-    // prcollec.insertMany(category)
-    .then(()=>{
-        console.log(category+"is added into database");
-        res.redirect("/admcategory")
-    }).catch((err)=>{
-        console.log(err);
-    })
 }
 
 exports.adminlogout = (req,res)=>{
-    
+    try{
         req.session.admin = false;
         res.render("admin/admlogin")
-    
+    }catch (err) {
+        console.error(err);
+        res.redirect("/error");
+    }
 }
 

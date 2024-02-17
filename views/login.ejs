@@ -13,7 +13,7 @@
         <div class="row justify-content-center align-items-center min-vh-100">
             <div class="col-sm-6 col-md-4">
                 <% if (locals.message) { %>
-                <div class="alert alert-success text-center" role="alert">
+                <div class="alert alert-danger text-center" role="alert">
                     <%= message === 'blocked' ? 'You are blocked' : '' %>
                 </div>
                 <% } %>
@@ -26,7 +26,7 @@
                         <input type="email" class="form-control" id="email" name="email" required>
                     </div>
                     <% if(locals.incorrectmail){ %>
-                    <div class="alert alert-success text-center" role="alert">
+                    <div class="alert alert-danger text-center" role="alert">
                         <%= incorrectmail %>
                     </div>
                     <% } %>
@@ -35,7 +35,7 @@
                         <input type="password" class="form-control" id="password" name="password" required>
                     </div>
                     <% if(locals.incorrectpass){ %>
-                    <div class="alert alert-success text-center" role="alert">
+                    <div class="alert alert-danger text-center" role="alert">
                         <%= incorrectpass %>
                     </div>
                     <% } %>
@@ -44,7 +44,7 @@
                     </div>
                 </form>
                 <% if(locals.incorrect){ %>
-                <div class="alert alert-success text-center" role="alert">
+                <div class="alert alert-danger text-center" role="alert">
                     <%= incorrect %>
                 </div>
                 <% } %>
