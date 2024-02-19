@@ -41,6 +41,6 @@ router.post("/addnewcoupon", isAdminAuthenticated,adminController.addnewcoupon);
 router.get("/coupondelete/:id",  isAdminAuthenticated,adminController.deletecoupon);
 router.post("/categoryoffer/:category", isAdminAuthenticated,adminController.postcategoryoffers)
 
-
+ 
 
 module.exports = router;

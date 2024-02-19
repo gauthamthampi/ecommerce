@@ -28,9 +28,7 @@ integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2
             <li><a href="/smart" class="nav-link px-2 text-success  fw-semibold">SMART</a></li>
           </ul>
     
-           <form class="col-12 col-lg-auto mb-lg-0 me-lg-3 text-end" role="search">
-            <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
-          </form>  
+          
           
           <div class="col-md-3 text-end d-flex align-items-center justify-content-end">
             <div class="dropdown">
@@ -95,7 +93,7 @@ integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2
                 <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
                 <p><strong>Date of Order:</strong> <%= order.dateoforder %></p>
                 <p><strong>Coupon:</strong> <%= order.coupon !== undefined && order.coupon !== "" ? order.coupon : "No coupon applied" %></p>
-                <%= console.log("coupon"+order.coupon) %>
+               
 
 
                 <h3 class="mt-3">Shipping Address</h3>
