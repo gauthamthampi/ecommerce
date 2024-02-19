@@ -15,16 +15,17 @@ const Razorpay = require('razorpay');
 const router = require("../router/user");
 const wishlistcollec = require("../models/wishlistconfig");
 const couponcollec = require("../models/couponconfig");
+const { restart } = require("nodemon");
 const razorpay = new Razorpay({
   apiVersion: 'v1',
   key_id: 'rzp_test_kCNHB9SD15lPWJ',
   key_secret: 'EWkYDVa7Rg320sZDHsE9WbTb',
 });
 
-let otpcode;
-let nameext;
-let signupdata;
-let logindata;
+// let otpcode;
+// let nameext;
+// let signupdata;
+// let logindata;
 
 exports.getwishlistremoveprd = async (req, res) => {
     try {
@@ -103,7 +104,7 @@ exports.getwishlist = async (req, res) => {
                 console.log("New wishlist created with product");
             } else {
                 let checkProduct = await wishlistcollec.findOne({'products.productId':productId})
-                console.log(checkProduct);
+                // console.log(checkProduct);
                 if (!checkProduct) {
                     wishlist.products.push({ productId: productId });
                     await wishlist.save();
@@ -208,7 +209,7 @@ exports.postaddaddress = async(req,res)=>{
             'address':addaddress
           }
         })
-        console.log(addaddress);
+        // console.log(addaddress);
         const updated = await uscollec.findById(id)
         nameext = updated;
         res.redirect("/userprof")
@@ -237,7 +238,7 @@ exports.postuseredit = async(req,res)=>{
        
         const updated = await uscollec.findById(id)
         nameext = updated;
-        console.log(updated);
+        // console.log(updated);
         res.redirect("/userprof");
     }catch (err) {
         console.error(err);
@@ -355,17 +356,17 @@ exports.getforgotpass = (req,res)=>{
         res.redirect("/error");
     }
 }
-let emailforgotpass;
+// let emailforgotpass;
 exports.postforgotpass = async(req,res)=>{
     try{
         const mail = {
             email:req.body.email
         }
-    
-         emailforgotpass = mail.email;
+         req.session.mail = mail.email;
+        //  let emailforgotpass = mail.email;
     
         const user = await usercollec.findOne({email:mail.email});
-        console.log(user);
+        // console.log(user);
         if(user){
             res.redirect("/forgotpassotp")
            
@@ -390,6 +391,7 @@ exports.getOtpVerificationforgotpass = (req, res) => {
          }
          
          otp = generateOTP();
+         req.session.otp = otp;
         const expiry = new Date(Date.now() + 5 * 60 * 1000);
        
         const transporter = nodemailer.createTransport({
@@ -399,14 +401,14 @@ exports.getOtpVerificationforgotpass = (req, res) => {
             pass: process.env.PASSWORD,
           },
         });
-     
+        let emailforgotpass = req.session.mail;
         const mailOptions = {
           from:process.env.EMAIL,
           to: emailforgotpass,
           subject: 'OTP for setting new password',
           text: `Your OTP for recovering  is ${otp}. "We care the security"-Gtimes`,
         };
-        otpcode = otp;
+        let otpcode = otp;
         transporter.sendMail(mailOptions, (error, info, expiry) => {
           if (error) {
             console.log(error);
@@ -435,6 +437,7 @@ exports.postOtpVerificationforgotpass = (req, res) => {
             otp6:req.body.otp6,
         }
         const otp = `${otpchar.otp1}${otpchar.otp2}${otpchar.otp3}${otpchar.otp4}${otpchar.otp5}${otpchar.otp6}`
+        let otpcode = req.session.otp;
         if(otpcode===otp){       
             res.redirect("/changepassword")
         }else{
@@ -470,7 +473,7 @@ exports.postchangepassword = async(req,res)=>{
         const newpassword ={
             password: hashedPassword
         };
-    
+        let emailforgotpass = req.session.mail;
         if(newpass.pass===newpass.conpass){
     
             await uscollec.updateOne(
@@ -514,43 +517,51 @@ const credential = {
 //post
 exports.postSignup = async (req, res) => {
     try{
-        const userData = {
-            firstname:req.body.firstname,
-            secondname:req.body.secondname,
-            email:req.body.email,
-            password:req.body.password
-        }
-    
-        
-        
-        const hashedPassword = await bcrypt.hash(userData.password, saltRounds); 
-            const user ={
-                firstname: userData.firstname,
-                secondname: userData.secondname,
-                email: userData.email,
-                password: hashedPassword
-            };
-            if(req.body.referalcode!=undefined){
-               const referal = req.body.referalcode;
-               const refuser = await uscollec.findOne({referal:referal})
-               refuser.wallet = 100;
-               await refuser.save();
-               user.wallet = 50;
-            }
-    
-            
-            signupdata = user;
-        const checkmail = await usercollec.findOne({email:userData.email});
-        //const checknum = usercollec.findOne({})
-        if(checkmail){
-            //const checknum = usercollec.findOne({phone:userData.phone});
-           res.render("signup",{
-            incorrectmail:"User already exists"
-           })
+        if(req.body.password!=req.body.cnfpassword){
+            res.render("signup",{
+                incorrect:"Password mismatch!!"
+            })
         }else{
-            res.redirect("/otpverif")
-        }  
-
+            const userData = {
+                firstname:req.body.firstname,
+                secondname:req.body.secondname,
+                email:req.body.email,
+                password:req.body.password
+            }
+        
+            
+            
+            const hashedPassword = await bcrypt.hash(userData.password, saltRounds); 
+                const user ={
+                    firstname: userData.firstname,
+                    secondname: userData.secondname,
+                    email: userData.email,
+                    password: hashedPassword
+                };
+                req.session.signupdata = user;
+                if(req.body.referalcode){
+                    const referal = req.body.referalcode;
+                    const refuser = await uscollec.findOne({referal:referal})
+                    if(refuser){
+                        refuser.wallet = 100;
+                        await refuser.save();
+                        user.wallet = 50;
+                    } else {
+                        console.log("Invalid referral code");
+                    }
+                }
+                //  let signupdata = req.session.signupdata;
+            const checkmail = await usercollec.findOne({email:userData.email});
+            //const checknum = usercollec.findOne({})
+            if(checkmail){
+                //const checknum = usercollec.findOne({phone:userData.phone});
+               res.render("signup",{
+                incorrectmail:"User already exists"
+               })
+            }else{
+                res.redirect("/otpverif")
+            }  
+        }
     }catch (err) {
         console.error(err);
         res.redirect("/error");
@@ -570,6 +581,7 @@ exports.getOtpVerification = (req, res) => {
          }
          
          otp = generateOTP();
+         req.session.otp = otp;
         const expiry = new Date(Date.now() + 5 * 60 * 1000);
        
         const transporter = nodemailer.createTransport({
@@ -579,13 +591,14 @@ exports.getOtpVerification = (req, res) => {
             pass: process.env.PASSWORD,
           },
         });
-     
+        let signupdata = req.session.signupdata;
         const mailOptions = {
           from:process.env.EMAIL,
           to: signupdata.email,
           subject: 'OTP for registration',
           text: `Your OTP for registration is ${otp}`,
         };
+        let otpcode = req.session.otp;
         otpcode = otp;
         transporter.sendMail(mailOptions, (error, info, expiry) => {
           if (error) {
@@ -620,13 +633,15 @@ exports.postOtpVerification = (req, res) => {
             otp6:req.body.otp6,
         }
         const otp = `${otpchar.otp1}${otpchar.otp2}${otpchar.otp3}${otpchar.otp4}${otpchar.otp5}${otpchar.otp6}`
+        let otpcode = req.session.otp;
+        let signupdata = req.session.signupdata;
         if(otpcode===otp){
             if(signupdata.email===credential.username){
             signupdata.isAdmin = true;
             }
             usercollec.insertMany(signupdata)
             .then(()=>{
-                console.log(signupdata);
+                // console.log(signupdata);
                 res.render("login",{
                     incorrect:"OTP Veified. Log in to continue.."
                 })
@@ -642,9 +657,7 @@ exports.postOtpVerification = (req, res) => {
     }catch (err) {
         console.error(err);
         res.redirect("/error");
-    }
-    
-    }
+    } }
 
     exports.resendgetOtpVerification = (req, res) => {
         try{
@@ -658,6 +671,7 @@ exports.postOtpVerification = (req, res) => {
              }
              
              otp = generateOTP();
+             req.session.otp = otp;
             const expiry = new Date(Date.now() + 5 * 60 * 1000);
            
             const transporter = nodemailer.createTransport({
@@ -667,13 +681,14 @@ exports.postOtpVerification = (req, res) => {
                 pass: process.env.PASSWORD,
               },
             });
-         
+            let signupdata = req.session.signupdata;
             const mailOptions = {
               from:process.env.EMAIL,
               to: signupdata.email,
               subject: 'OTP for registration',
               text: `Your OTP for registration is ${otp}`,
             };
+            let otpcode = req.session.otp;
             otpcode = otp;
             transporter.sendMail(mailOptions, (error, info, expiry) => {
               if (error) {
@@ -708,10 +723,12 @@ exports.postOtpVerification = (req, res) => {
                 otp6:req.body.otp6,
             }
             const otp = `${otpchar.otp1}${otpchar.otp2}${otpchar.otp3}${otpchar.otp4}${otpchar.otp5}${otpchar.otp6}`
+            let otpcode = req.session.otp;
+            let signupdata = req.session.signupdata;
             if(otpcode===otp){
                 usercollec.insertMany(signupdata)
                 .then(()=>{
-                    console.log(signupdata);
+                    // console.log(signupdata);
                     res.render("login",{
                         incorrect:"OTP Veified. Log in to continue.."
                     })

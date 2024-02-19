@@ -188,7 +188,7 @@ exports.removecoupon = async (req, res) => {
         }
 
         let totalPrice = cart.totalPrice;
-        console.log("totalPr" + totalPrice);
+        // console.log("totalPr" + totalPrice);
         let couponname = cart.couponName;
         let coupon = await couponcollec.findOne({name:couponname})
         let discount = coupon.discount
@@ -251,10 +251,10 @@ exports.postvieworder = async (req, res) => {
         let nameext = await uscollec.findOne({email:req.session.user});
         const orderId = req.params.id;
         const user = await uscollec.findById(nameext._id);
-        console.log("user"+user)
+        // console.log("user"+user)
         // Find the canceled order
         const order = await ordcollec.findById(orderId);
-        console.log("order"+order);
+        // console.log("order"+order);
         if(order.paymentMethod==="Online Payment"){
           user.wallet = order.totalPrice;
           user.save();
@@ -292,8 +292,8 @@ exports.cancelsinglepro = async (req, res) => {
     try {
         let productId = req.params.productId;
         let orderId = req.params.orderId; // Assuming you have orderId in your request parameters
-        console.log(productId);
-        console.log(orderId);
+        // console.log(productId);
+        // console.log(orderId);
 
         const product = await prcollec.findById(productId);
         if (!product) {
@@ -355,7 +355,7 @@ exports.getorderconfirm = async(req, res) => {
         let userId = nameext._id;
         let user = await uscollec.findById(userId);
        
-        console.log(index);
+        // console.log(index);
 
         const cart = await cartcollec.findById(cartId);
         let couponName = cart.couponName;
@@ -495,7 +495,7 @@ exports.getorderconfirm = async(req, res) => {
 exports.postcartcheckout = async(req,res)=>{
     try{
         let address = req.body.address;
-        console.log(address);
+        // console.log(address);
         res.send("Order loading......")
     }catch (err) {
         console.error(err);
@@ -521,13 +521,13 @@ exports.postaddaddresscart = async(req,res)=>{
             'address':addaddress
           }
         })
-        console.log(addaddress);
+        // console.log(addaddress);
         const updated = await uscollec.findById(id)
         nameext = updated;
         let user = await uscollec.findById(nameext._id)
         let cartId = req.params.id;
         let cart = await cartcollec.findById(cartId);
-        console.log(cart);
+        // console.log(cart);
         res.redirect(`/user/cartcheckout/${cartId}`)
 
     }catch (err) {
@@ -597,7 +597,7 @@ exports.cartcheckout = async(req,res)=>{
         let user = await uscollec.findById(nameext._id)
         let cartId = req.params.id;
         let cart = await cartcollec.findById(cartId);
-        console.log(cart); 
+        // console.log(cart); 
         res.render("user/checkout",{
             userData:user,
             cartData:cart,
@@ -742,7 +742,7 @@ exports.getusercart = async (req, res) => {
                 });
     
                 let coupons = user.coupons;
-                console.log("coupons"+coupons);
+                // console.log("coupons"+coupons);
     
                 // Render the cart page with the items and additional details
                 res.render('user/usercart', { itemsWithDetails, userCart, coupons});
@@ -804,7 +804,7 @@ exports.getcheckout = async(req,res) =>{
         let userId = nameext._id;
       
         let cart = await cartcollec.findOne({userId:userId})
-        console.log(cart);
+        // console.log(cart);
     
         const productIdToUpdate = id; // Replace with the actual product ID you want to update
         const newQuantity = quantity; // Replace with the new quantity
