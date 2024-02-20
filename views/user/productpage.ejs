@@ -42,10 +42,8 @@
               </ul>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24"><path d="M20.808,11.079C19.829,16.132,12,20.5,12,20.5s-7.829-4.368-8.808-9.421C2.227,6.1,5.066,3.5,8,3.5a4.444,4.444,0,0,1,4,2,4.444,4.444,0,0,1,4-2C18.934,3.5,21.773,6.1,20.808,11.079Z"/></svg>
-            <button type="button" class="btn position-relative"><svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24"><path d="M8,3V7H21l-2,7H8v2H18a1,1,0,0,1,0,2H7a1,1,0,0,1-1-1V4H4A1,1,0,0,1,4,2H7A1,1,0,0,1,8,3ZM6,20.5A1.5,1.5,0,1,0,7.5,19,1.5,1.5,0,0,0,6,20.5Zm9,0A1.5,1.5,0,1,0,16.5,19,1.5,1.5,0,0,0,15,20.5Z"/></svg><span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-              99+
-              <span class="visually-hidden">unread messages</span>
-            </span></button>
+           <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24"><path d="M8,3V7H21l-2,7H8v2H18a1,1,0,0,1,0,2H7a1,1,0,0,1-1-1V4H4A1,1,0,0,1,4,2H7A1,1,0,0,1,8,3ZM6,20.5A1.5,1.5,0,1,0,7.5,19,1.5,1.5,0,0,0,6,20.5Zm9,0A1.5,1.5,0,1,0,16.5,19,1.5,1.5,0,0,0,15,20.5Z"/></svg>
+          
             <% if (locals.user) { %>
               <p class="text-primary">Hello <span> <%= user %> </span></p>
               <% } %>
@@ -78,17 +76,21 @@
         <div class="column">
           <div> <h1><%= product.modelname %></h1></div>
           <div> <p><%= product.description %></p></div>
-          <div class="fw-lighter"> <h5>Availability:<%= product.stock %>products left.</h5> </div>
+          <div class="fw-lighter"> <h5>Availability : <%= product.stock %> left</h5> </div>
           <% if (product.offerprice>0) { %>
             <div class="border-bottom"> <h4>Price : <strike>₹<%= product.price %></strike>&nbsp;<span style="color: green;">₹<%= product.offerprice%>(Offer price)</span></h4></div>
           <% } else { %>
-            <div class="border-bottom"> <h4>Price: <%= product.price %></h4></div>
+            <div class="border-bottom"> <h4>Price: ₹<%= product.price %></h4></div>
             <% } %>
          
          <div class="border-bottom">
+          <% if (product.stock>0) { %>
           <a href="/addtowishlist/<%= product._id %>"><button style="width: 100%;" class="btn btn-danger p-2 my-2 rounded-5"><h5>Add to Wishlist</h5></button></a>
           <a href="/user/addtocart/<%= product._id %>"><button style="width: 100%;" class="btn btn-primary p-2 mb-3 rounded-5"><h5>Add to Cart</h5></button></a>
-       
+          <% }else { %>
+          <h3 style="color: red;">Product Sold Out!!</h3>
+          <% } %>
+          
       </div> 
       <div class="accordion" id="accordionExample">
         <div class="accordion-item">

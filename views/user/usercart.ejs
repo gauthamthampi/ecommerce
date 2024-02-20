@@ -162,26 +162,26 @@
                           <a href="/user/cartcheckout/<%= userCart._id %>"><button class="btn btn-primary" style="width: 100%;">Proceed To Checkout</button></a>
                       </div>
                   </div>
-                  <div class="row p-3 m-1" style="background-color:rgb(203, 200, 200)">
+                  <div class="row p-3 m-1" style="background-color:rgb(226, 226, 226)">
                     <p class="border-bottom">Available Coupons</p>
-                    <% if (coupons & userCart.coupon==="Not applied") { %>
+                    <% if (coupons && coupons.length > 0 && userCart.coupon === "Not applied") { %>
                       <form id="couponForm" method="post" action="/cart/selectcoupon/<%= userCart._id %>">
-                      <% coupons.forEach(coupon => { %>
-                          <div class="form-check bg-white my-2">
-                              <input class="form-check-input" type="radio" name="flexRadioDefault" value="<%=coupon.name%>">
-                              <label class="form-check-label">
-                                  <%= coupon.name %>
-                              </label><br>
-                              <label><%= coupon.description %></label>
-                          </div>
-                      <% }); %>
-                      <button type="submit" class="btn btn-success">Apply Coupon</button>
-                    </form>
-                  <% } else if(userCart.coupon==="Applied") { %>
-                   <a href="/removecoupon/<%= userCart._id %>"><button class="btn btn-danger">Remove Coupon</button></a>
-                 <% } else { %>
+                          <% coupons.forEach(coupon => { %>
+                              <div class="form-check bg-white my-2">
+                                  <input class="form-check-input" type="radio" name="flexRadioDefault" value="<%=coupon.name%>">
+                                  <label class="form-check-label">
+                                      <%= coupon.name %>
+                                  </label><br>
+                                  <label><%= coupon.description %></label>
+                              </div>
+                          <% }); %>
+                          <button type="submit" class="btn btn-success">Apply Coupon</button>
+                      </form>
+                  <% } else if(userCart.coupon === "Applied") { %>
+                      <a href="/removecoupon/<%= userCart._id %>"><button class="btn btn-danger">Remove Coupon</button></a>
+                  <% } else { %>
                       <p>No coupons available</p>
-                  <% } %>    
+                  <% } %>
                  
         </div>
     </div>

@@ -310,7 +310,7 @@
                     method: 'POST',
                     data: {
                         selectedAddressIndex: selectedIndex,
-                        totalAmount: <%= cartData.totalPrice %>,
+                        totalAmount: '<%= cartData.totalPrice %>',
                     },
                     success: function (response) {
                         // Response should contain the Razorpay order details
