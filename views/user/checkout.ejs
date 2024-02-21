@@ -272,6 +272,27 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.3/dist/sweetalert2.all.min.js"></script>
     <script>
+  function trimInputs() {
+    var houseno = document.getElementById("houseno");
+    var street = document.getElementById("street");
+    var city = document.getElementById("city");
+    var state = document.getElementById("state");
+    var pincode = document.getElementById("pincode");
+
+    if (houseno.value.trim() === "" || street.value.trim() === "" || city.value.trim() === "" || state.value.trim() === "" || pincode.value.trim() === "") {
+      alert("Please fill out all fields.");
+      return false; // Prevent form submission
+    }
+
+    houseno.value = houseno.value.trim();
+    street.value = street.value.trim();
+    city.value = city.value.trim();
+    state.value = state.value.trim();
+    pincode.value = pincode.value.trim();
+
+    return true; // Allow form submission
+  }
+
      var selectedIndex;
     
     

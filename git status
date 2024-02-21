@@ -1,0 +1,78 @@
+[33mcommit 8da4462d5e7839f97d744673c19a42b077a484ec[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Gautham <gthampies@gmail.com>
+Date:   Wed Feb 21 12:13:38 2024 +0530
+
+    Profile changes
+
+[33mcommit dfc9ee7bb85db2fb535c2093b5bee2891366fd0c[m
+Author: Gautham <gthampies@gmail.com>
+Date:   Tue Feb 20 18:43:05 2024 +0530
+
+    Remove modules
+
+[33mcommit 9dae398688b3604cb6b986ce3b04e37121c036e3[m
+Author: Gautham <gthampies@gmail.com>
+Date:   Tue Feb 20 18:39:23 2024 +0530
+
+    Gitignore
+
+[33mcommit 31f07201542b77df407e758e104ffcd8b21c186d[m
+Author: Gautham <gthampies@gmail.com>
+Date:   Tue Feb 20 15:27:01 2024 +0530
+
+    gitignore
+
+[33mcommit 3e348220ac3c3c029180734456a665b4dabf26b2[m
+Author: Gautham <gthampies@gmail.com>
+Date:   Tue Feb 20 13:39:57 2024 +0530
+
+    Seventh c
+
+[33mcommit b2ba8e92754d9f55c39d309ada28174748d277c6[m
+Author: Gautham <gthampies@gmail.com>
+Date:   Tue Feb 20 12:55:28 2024 +0530
+
+    Sixth commit
+
+[33mcommit 61cae2c4449deb8858f35acfd389fcbd64300cdf[m
+Author: Gautham <gthampies@gmail.com>
+Date:   Tue Feb 20 01:59:48 2024 +0530
+
+    Fifth commit
+
+[33mcommit a50e62be16ec2da3d7cdc4d54d2a5667352d2321[m
+Author: Gautham <gthampies@gmail.com>
+Date:   Mon Feb 19 20:48:28 2024 +0530
+
+    Fourth commit
+
+[33mcommit 46b4b2998779c64da804f65a545b743576fbe117[m
+Author: Gautham <gthampies@gmail.com>
+Date:   Sun Feb 18 01:26:51 2024 +0530
+
+    third commit
+
+[33mcommit 7ecb6bf7d3b0d0f02b818972456a6688f4ada23d[m
+Merge: 1a60a07 780ac0e
+Author: Gautham <gthampies@gmail.com>
+Date:   Sat Feb 17 20:04:49 2024 +0530
+
+    Merge branch 'main' of github.com:gauthamthampi/ecommerce
+
+[33mcommit 1a60a07b596b5a333c8581e195d139215683d84a[m
+Author: Gautham <gthampies@gmail.com>
+Date:   Sat Feb 17 20:03:00 2024 +0530
+
+    second commit
+
+[33mcommit 780ac0e0bc7205f6cef517a8f83658af6947b976[m
+Author: gauthamthampi <146702107+gauthamthampi@users.noreply.github.com>
+Date:   Sat Feb 17 19:49:14 2024 +0530
+
+    Create README.md
+
+[33mcommit ef93315ca131d2d167f117b2ff4ef1f8373cc85e[m
+Author: Gautham <gthampies@gmail.com>
+Date:   Fri Feb 16 18:35:54 2024 +0530
+
+    first commit
