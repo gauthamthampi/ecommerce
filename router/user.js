@@ -28,6 +28,7 @@ router.get("/womens", userController.getWomens);
 router.get("/smart", userController.getSmart);
 router.get("/logout",userController.userlogout)
 router.get("/userprof",checkUserBlocked, userController.getuserprof)
+router.get("/mywallet", checkUserBlocked, userController.getmywallet)
 router.get("/generate-referalcode",checkUserBlocked, orderController.generateReferalcode)
 router.post("/useredit",checkUserBlocked,userController.postuseredit)
 router.post("/addaddress",checkUserBlocked,userController.postaddaddress)

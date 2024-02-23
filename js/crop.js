@@ -92,6 +92,7 @@ crop.addEventListener('click', e => {
     document.querySelector('.cropper110-close').click()
 });
 
+
 document.querySelector('.cropper110-close')
     .addEventListener('click', () => {
         document.getElementById('cropper110Modal').style.display = 'none'

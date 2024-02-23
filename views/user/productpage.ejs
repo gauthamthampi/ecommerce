@@ -76,7 +76,12 @@
         <div class="column">
           <div> <h1><%= product.modelname %></h1></div>
           <div> <p><%= product.description %></p></div>
-          <div class="fw-lighter"> <h5>Availability : <%= product.stock %> left</h5> </div>
+          <% if (product.stock<=0) { %>
+            <div class="fw-lighter"> <h5>Availability : <span style="color: red;">Out of Stock!</span></h5> </div>
+          <% } else {%>
+            <div class="fw-lighter"> <h5>Availability : <%= product.stock %> left</h5> </div>
+            <% } %>
+         
           <% if (product.offerprice>0) { %>
             <div class="border-bottom"> <h4>Price : <strike>₹<%= product.price %></strike>&nbsp;<span style="color: green;">₹<%= product.offerprice%>(Offer price)</span></h4></div>
           <% } else { %>

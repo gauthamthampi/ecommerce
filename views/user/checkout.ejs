@@ -163,6 +163,13 @@
                         <button class="btn btn-primary proceed-button" type="button"  style="display: none;">PROCEED TO PAYMENT</button>
                 
                       </div>
+                      <div class="form-check px-5 py-2">
+                        <input class="form-check-input" type="radio" value="Wallet" name="flexRadioDefault1" id="flexRadioDefault3" <%= userData.wallet < cartData.totalPrice ? 'disabled' : '' %>>
+                        <label class="form-check-label" for="flexRadioDefault3">
+                            Wallet
+                        </label>
+                    </div>
+                    
                     </form>
                   </div>
  
