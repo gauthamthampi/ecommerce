@@ -394,6 +394,29 @@ exports.getorderconfirm = async(req, res) => {
             quantity: item.quantity,
             prostatus: "Confirmed" // Set prostatus to "Confirmed"
         })); 
+        
+        if (paymentMethod === 'Wallet') {
+            // Calculate the remaining wallet balance after deducting the total price
+            const remainingBalance = user.wallet - cart.totalPrice;
+            
+            if (remainingBalance >= 0) {
+                // Update the user's wallet balance
+                user.wallet = remainingBalance;
+        
+                // Push the transaction details to the wallet history array
+                const walletTransaction = {
+                    amount: -cart.totalPrice, // Negative value for deduction
+                    date: currentDate,
+                    status: 'Debited'
+                };
+                user.wallethistory.push(walletTransaction);
+        
+                // Save the updated user document
+                await user.save();
+            } else {
+                return res.status(400).json({ message: 'Insufficient wallet balance' });
+            }
+        }
 
         const orderData = {
             userId: cart.userId,

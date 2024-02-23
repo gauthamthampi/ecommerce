@@ -68,6 +68,17 @@ const userschema = new mongoose.Schema({
         type:Number,
         default:0
     },
+    wallethistory:[{
+        amount:{
+            type:Number,
+        },
+        date:{
+            type:Date,
+        },
+        status:{
+            type:String,
+        }
+    }],
     referal:{
         type:String,
         default:"Not created"

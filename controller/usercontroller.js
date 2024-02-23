@@ -245,7 +245,20 @@ exports.postuseredit = async(req,res)=>{
         res.redirect("/error");
     }  
     }
-
+exports.getmywallet = async(req,res)=>{
+    try{
+        if(req.session.user){
+        let user = await uscollec.findOne({email:req.session.user})
+        console.log("user"+user);
+        res.render("user/mywallet",{user});
+        }else{
+            res.redirect("/login")
+        } 
+    }catch(err){
+        console.log(err);
+        res.redirect("/error");
+    }
+}
 
 exports.getuserprof = async(req,res) => {
     try{
@@ -536,16 +549,31 @@ exports.postSignup = async (req, res) => {
                     firstname: userData.firstname,
                     secondname: userData.secondname,
                     email: userData.email,
-                    password: hashedPassword
+                    password: hashedPassword,
+                    wallethistory: []
                 };
                 req.session.signupdata = user;
                 if(req.body.referalcode){
                     const referal = req.body.referalcode;
                     const refuser = await uscollec.findOne({referal:referal})
                     if(refuser){
-                        refuser.wallet = 100;
+                        refuser.wallet += 100;
                         await refuser.save();
-                        user.wallet = 50;
+                        const currentDate = new Date();
+                        const referrerHistory = {
+                            amount: 100,
+                            date: currentDate,
+                            status: "Credited"
+                        };
+                        refuser.wallethistory.push(referrerHistory);
+                        user.wallet += 50;
+        
+                        const newUserHistory = {
+                            amount: 50,
+                            date: currentDate,
+                            status: "Credited"
+                        };
+                        user.wallethistory.push(newUserHistory);
                     } else {
                         console.log("Invalid referral code");
                     }
