@@ -550,7 +550,8 @@ exports.postSignup = async (req, res) => {
                     secondname: userData.secondname,
                     email: userData.email,
                     password: hashedPassword,
-                    wallethistory: []
+                    wallethistory: [],
+                    wallet:0
                 };
                 req.session.signupdata = user;
                 if(req.body.referalcode){
@@ -558,7 +559,6 @@ exports.postSignup = async (req, res) => {
                     const refuser = await uscollec.findOne({referal:referal})
                     if(refuser){
                         refuser.wallet += 100;
-                        await refuser.save();
                         const currentDate = new Date();
                         const referrerHistory = {
                             amount: 100,
@@ -566,7 +566,9 @@ exports.postSignup = async (req, res) => {
                             status: "Credited"
                         };
                         refuser.wallethistory.push(referrerHistory);
+                        await refuser.save();
                         user.wallet += 50;
+                        
         
                         const newUserHistory = {
                             amount: 50,
@@ -574,6 +576,7 @@ exports.postSignup = async (req, res) => {
                             status: "Credited"
                         };
                         user.wallethistory.push(newUserHistory);
+                    
                     } else {
                         console.log("Invalid referral code");
                     }
