@@ -12,6 +12,7 @@ const admrouter = require("./router/admin")
 const multer = require("multer");
 const nocache = require("nocache");
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 
@@ -23,6 +24,7 @@ app.use(session({
 }));
 
 
+
 // app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/uploads', express.static('uploads'));
 app.use("/static", express.static('public'));
@@ -31,8 +33,9 @@ app.use(userrouter);
 app.use(admrouter);
 
 
-app.set('view engine','ejs');
 
+app.set('view engine','ejs');
+ 
 // Error handling middleware
 app.use((err, req, res, next) => {
     // Log the error
@@ -51,7 +54,7 @@ app.use((err, req, res, next) => {
   app.get('*', (req, res) => {
     res.redirect('/error');
   });
-
-
+ 
+  
 app.listen(process.env.port)
 console.log(`Server deployed at http://localhost:${process.env.port}/homepage`);

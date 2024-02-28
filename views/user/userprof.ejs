@@ -19,6 +19,10 @@
       .nav-pills li a:hover{
             background-color:  #0275d8;
         }
+        a {
+      text-decoration: none; /* Remove underline */
+      color: inherit; /* Use the default text color */
+      }
   </style>
   </head>
 <body style="background-color: #dedcdc; margin: 0; padding: 0;">
@@ -50,13 +54,15 @@
             <li><a class="dropdown-item" href="/login">Login/Signup</a></li>
             <li><a class="dropdown-item" href="/userprof">My Profile</a></li>
             <li><a class="dropdown-item" href="/user/vieworder">Your Orders</a></li>
+            <% if (locals.user) { %>
             <li><a class="dropdown-item" href="/logout" onclick="alert('Logout successfully')">Logout</a></li>
+            <% } %>
           </ul>
         </div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24"><path d="M20.808,11.079C19.829,16.132,12,20.5,12,20.5s-7.829-4.368-8.808-9.421C2.227,6.1,5.066,3.5,8,3.5a4.444,4.444,0,0,1,4,2,4.444,4.444,0,0,1,4-2C18.934,3.5,21.773,6.1,20.808,11.079Z"/></svg>
+        <a href="/viewwishlist"><svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24"><path d="M20.808,11.079C19.829,16.132,12,20.5,12,20.5s-7.829-4.368-8.808-9.421C2.227,6.1,5.066,3.5,8,3.5a4.444,4.444,0,0,1,4,2,4.444,4.444,0,0,1,4-2C18.934,3.5,21.773,6.1,20.808,11.079Z"/></svg></a>
         <a href="/user/user_cart"><svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="50" height="42" viewBox="0 0 24 24"><path d="M8,3V7H21l-2,7H8v2H18a1,1,0,0,1,0,2H7a1,1,0,0,1-1-1V4H4A1,1,0,0,1,4,2H7A1,1,0,0,1,8,3ZM6,20.5A1.5,1.5,0,1,0,7.5,19,1.5,1.5,0,0,0,6,20.5Zm9,0A1.5,1.5,0,1,0,16.5,19,1.5,1.5,0,0,0,15,20.5Z"/></svg></a>
         <% if (locals.user) { %>
-        <p class="text-primary">Hello <span> <%= user %> </span></p>
+        <p class="text-primary">Hello <span> <%= user.firstname %> </span></p>
         <% } %>
       </div>
     </header>
@@ -66,12 +72,9 @@
     <div class="row flex-wrap">
       <div class="bg-dark pt-3 col-auto col-md-4 col-lg-3 min-vh-100">
         <div class="bg-dark">
-          <a class="d-flex text-decoration-none align-items-center ">
-              <span class="fs-3 d-none d-sm-inline border-bottom">USER PANEL</span>
-          </a>
           <ul class="nav nav-pills flex-column mt-4">
               <li class="nav-item align-items-center">
-                  <a href="/adminhome" class="nav-link active">
+                  <a href="/userprof" class="nav-link active">
                      <svg  xmlns="http://www.w3.org/2000/svg" height="35" width="30" viewBox="0 5 32.236 32" id="House" ><path d="M1.656 17.756 16 5.324l14.344 12.432a1.001 1.001 0 0 0 1.312-1.512l-15-13a1 1 0 0 0-1.31 0L10 7.876V6a2 2 0 0 0-4 0v5.342L.344 16.244a1.003 1.003 0 0 0-.1 1.412c.364.416.994.462 1.412.1zM12 22h8v10h6a2 2 0 0 0 2-2v-9.802c0-.6-.268-1.166-.732-1.546l-10-8.198a1.996 1.996 0 0 0-2.536 0l-10 8.198A1.993 1.993 0 0 0 4 20.198V30a2 2 0 0 0 2 2h6V22z" fill="#ffffff" class="color000000 svgShape"/></svg><span class="fs-5 ms-3 d-none d-sm-inline">
                           HOME</span>
                   </a>
@@ -94,14 +97,22 @@
               
               </li>
               <li class="nav-item">
-                  <a href="" class="nav-link text-white">
+                  <a href="/viewwishlist" class="nav-link text-white">
                     <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" height="35" width="30" stroke-width="3" stroke="#ffffff" fill="none"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M9.06,25C7.68,17.3,12.78,10.63,20.73,10c7-.55,10.47,7.93,11.17,9.55a.13.13,0,0,0,.25,0c3.25-8.91,9.17-9.29,11.25-9.5C49,9.45,56.51,13.78,55,23.87c-2.16,14-23.12,29.81-23.12,29.81S11.79,40.05,9.06,25Z"></path></g></svg>
                     <span class="fs-5 ms-3 d-none d-sm-inline">WISHLIST</span>
                   </a>
               </li>
               <li class="nav-item align-items-center ">
                 <a href="/mywallet" class="nav-link text-white">
-                   <svg  xmlns="http://www.w3.org/2000/svg" height="35" width="30" viewBox="0 5 32.236 32" id="House" ><path d="M1.656 17.756 16 5.324l14.344 12.432a1.001 1.001 0 0 0 1.312-1.512l-15-13a1 1 0 0 0-1.31 0L10 7.876V6a2 2 0 0 0-4 0v5.342L.344 16.244a1.003 1.003 0 0 0-.1 1.412c.364.416.994.462 1.412.1zM12 22h8v10h6a2 2 0 0 0 2-2v-9.802c0-.6-.268-1.166-.732-1.546l-10-8.198a1.996 1.996 0 0 0-2.536 0l-10 8.198A1.993 1.993 0 0 0 4 20.198V30a2 2 0 0 0 2 2h6V22z" fill="#ffffff" class="color000000 svgShape"/></svg><span class="fs-5 ms-3 d-none d-sm-inline">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#ffffff" version="1.1" id="Capa_1" height="35" width="30" viewBox="0 0 969.486 969.486" xml:space="preserve" stroke="#ffffff">
+
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+                    
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+                    
+                    <g id="SVGRepo_iconCarrier"> <g> <g> <path d="M806.582,235.309L766.137,87.125l-137.434,37.51L571.451,9.072L114.798,235.309H0v725.105h907.137V764.973h62.35v-337.53 h-62.352V235.309H806.582z M718.441,170.63l17.654,64.68h-52.561h-75.887h-126.19l111.159-30.339l66.848-18.245L718.441,170.63z M839.135,892.414H68V522.062v-129.13v-10.233v-69.787v-9.602h35.181h27.538h101.592h409.025h75.889h37.43h35.242h35.244h13.994 v51.272v72.86h-15.357h-35.244h-87.85H547.508h-55.217v27.356v75.888v8.758v35.244v35.244v155.039h346.846v127.441H839.135z M901.486,696.973h-28.352h-34H560.291V591.375v-35.244v-35.244v-23.889v-1.555h3.139h90.086h129.129h56.492h34h4.445h23.904 V696.973z M540.707,100.191l21.15,42.688l-238.955,65.218L540.707,100.191z"/> <polygon points="614.146,564.57 614.146,576.676 614.146,631.152 680.73,631.152 680.73,564.57 658.498,564.57 "/> </g> </g> </g>
+                    
+                    </svg><span class="fs-5 ms-3 d-none d-sm-inline">
                         MY WALLET</span>
                 </a>
             </li>
@@ -135,18 +146,10 @@
         </div>
       <% } %>
     
-
-        <!-- <div class="fw-bold mt-3">
-            <h2>My Profile</h2>
-        </div>
- -->
-
         <div class="d-flex">
-          <div class="col fw-bold mt-3">
-            <h2>My Profile</h2>
-        </div>
-          <div class="col-end mt-3 fs-5 fw-bold"> <!-- Use ms-auto to push the email to the end of the container -->
-             Wallet : <%= userData.wallet %>
+          <div class="col fw-bold mt-3 text-center">
+            <h1 style="font-family: Allura, cursive;
+            font-weight: 500;">My Profile</h1>
           </div>
       </div>
 
@@ -165,8 +168,8 @@
    
             <div class="container" style="margin-top: 100px;">
                 <div class="row  row-cols-md-4 g-3 justify-content-center">
-                  <div class="col">
-                    <div class="card border border-secondary rounded-5 mx-md-3" style="height: 200px;">
+                 <div class="col">
+                  <a href="/user/vieworder"><div class="card border border-secondary rounded-5 mx-md-3" style="height: 200px;">
                       <div class="card-body d-flex align-items-center justify-content-center">
                         
                           <!-- Your SVG code here -->
@@ -182,7 +185,7 @@
                           <h5 class="fs-4 text-body-emphasis">View Orders</h5>
                         </div>
                       </div>
-                    </div>
+                    </div></a>
                   </div>
               
                   <div class="col"  data-bs-toggle="modal" data-bs-target="#exampleModal1" style="cursor: pointer;">
@@ -282,12 +285,6 @@
                   </div>
                   </div>
 
-
-
-
-
-
-
                    <%# modal for adding new address %>
                    <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel3" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -380,8 +377,6 @@
                     </div>
                   </div>
                   </div>
-              
-              
               
                 </div>
             </div>

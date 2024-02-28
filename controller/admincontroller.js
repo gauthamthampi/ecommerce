@@ -10,6 +10,7 @@ const PDFDocument = require('pdfkit-table');
 const ExcelJS = require('exceljs');
 const couponcollec = require("../models/couponconfig");
 const categorycollec = require("../models/categoryconfig");
+const session = require("express-session");
 
 
 const credential = {
@@ -45,16 +46,27 @@ exports.addnewcoupon = async(req,res)=>{
 
     let formattedExpiryDate = `${year}-${month}-${day}`;
     console.log(formattedExpiryDate);
-    let newcoupon = {
-        name:req.body.couponname,
-        threshold:req.body.threshold,
-        description:req.body.description,
-        expirydate:formattedExpiryDate,
-        discount:req.body.discount
+    let couponname = req.body.couponname.toUpperCase();
+    let check = await couponcollec.findOne({name:couponname})
+    if(check){
+        let coupon = await couponcollec.find({})
+        res.render("admin/admcouponmanagement",{
+            coupon,
+            message:"Coupon already exists.Retry!"
+    
+        }
+        ) 
+    }else{
+        let newcoupon = {
+            name:couponname,
+            threshold:req.body.threshold,
+            description:req.body.description,
+            expirydate:formattedExpiryDate,
+            discount:req.body.discount
+        }
+        await couponcollec.create(newcoupon);
+        res.redirect("/admincoupons")
     }
-    await couponcollec.create(newcoupon);
-    res.redirect("/admincoupons")
-
     }catch (err) {
         console.error(err);
         res.redirect("/error");

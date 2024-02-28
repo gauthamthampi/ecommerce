@@ -255,9 +255,16 @@ exports.postvieworder = async (req, res) => {
         // Find the canceled order
         const order = await ordcollec.findById(orderId);
         // console.log("order"+order);
-        if(order.paymentMethod==="Online Payment"){
-          user.wallet = order.totalPrice;
-          user.save();
+        if(order.paymentMethod==="Online Payment" || order.paymentMethod==="Wallet"){
+          user.wallet += order.totalPrice;
+          const currentDate = new Date();
+          const walletHistory = {
+            amount: order.totalPrice,
+            date: currentDate,
+            status: "Credited"
+        };
+        user.wallethistory.push(walletHistory);
+        await user.save();
         }
 
         // Update order status to 'Cancelled'
@@ -280,6 +287,8 @@ exports.postvieworder = async (req, res) => {
                 await product.save();
             }
         }
+
+
 
         res.redirect("/user/vieworder");
     } catch (error) {
@@ -560,17 +569,27 @@ exports.postaddaddresscart = async(req,res)=>{
 }
 
 
-  exports.cartquandityupd = async (req, res) => {
+exports.cartquandityupd = async (req, res) => {
     try {
       let nameext = await uscollec.findOne({email:req.session.user})
       const quantity = req.body.quantity;
       let userId = nameext._id;
       let productId = req.params.id;
-      let pro = await prcollec.findById(productId);
-  
+      const pro = await prcollec.findById(productId);
+    //   req.session.message = 'Stock unavailable';
+
+      
       if (!pro) {
         return res.status(404).json({ message: 'Product not found' });
       }
+
+      const stock = pro.stock;
+
+    //   if (quantity > stock) {
+    //       req.session.message = 'Stock unavailable';
+    //       return res.redirect('/user/user_cart/ada');
+    //     };
+      
   
       const cart = await cartcollec.findOne({ userId: userId });
   
@@ -583,12 +602,6 @@ exports.postaddaddresscart = async(req,res)=>{
         return res.status(404).json({ message: 'Product not found in the cart' });
       }
   
-      if (quantity > pro.stock) {
-        session.message = 'Stock unavailable';
-        return res.redirect('/user/user_cart');
-       }
-
-     
       // Calculate the change in quantity and total price
       const quantityChange = quantity - cartItem.quantity;
       const totalPriceChange = quantityChange * pro.price;

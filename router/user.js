@@ -34,7 +34,7 @@ router.post("/useredit",checkUserBlocked,userController.postuseredit)
 router.post("/addaddress",checkUserBlocked,userController.postaddaddress)
 router.post("/editaddress",checkUserBlocked,userController.posteditaddress)
 router.get("/deleteaddress/:id",checkUserBlocked,userController.getdeleteaddress);
-router.get("/viewwishlist/:id", checkUserBlocked,userController.getviewishlist)
+router.get("/viewwishlist", checkUserBlocked,userController.getviewishlist)
 router.get("/addtowishlist/:id",checkUserBlocked,userController.getwishlist)
 router.get("/wishlist/removeproduct/:id",checkUserBlocked,userController.getwishlistremoveprd)
 router.get("/mens/prod_cart/:id",checkUserBlocked,orderController.getprodcart)
@@ -56,6 +56,7 @@ router.post("/user/vieworder/:id",checkUserBlocked,orderController.postvieworder
 router.post('/user/orders/cancel-singleproduct/:productId/:orderId', checkUserBlocked,orderController.cancelsinglepro);
 router.post("/cart/selectcoupon/:id", checkUserBlocked,orderController.selectcoupon)
 router.get("/removecoupon/:id",checkUserBlocked,orderController.removecoupon);
+
 
 
 module.exports = router;

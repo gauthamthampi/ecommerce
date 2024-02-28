@@ -139,7 +139,7 @@
         <div class="modal-body">
           <form method="post" action="/addnewcoupon" onsubmit="return validateForm()">
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="floatingInput" placeholder="Coupon name" name="couponname" required>
+                <input type="text" class="form-control" id="floatingInput" pattern="^\S*$" placeholder="Coupon name" name="couponname" required>
                 <label for="floatingInput">Enter Coupon Name</label>
               </div>
               <div class="form-floating mb-3">
@@ -171,9 +171,9 @@
          
            
 
-           <% if (locals.success) { %>
+           <% if (locals.message) { %>
             <div class="alert alert-primary alert-dismissible fade show" role="alert">
-              <%= success %>
+              <%= message %>
             
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
@@ -250,7 +250,7 @@
                             // Redirect to the actual delete URL or perform your delete action here
                             window.location.href = '/coupondelete/' + productId;
                         }
-                    });
+                    }); 
                 });
             });
         });

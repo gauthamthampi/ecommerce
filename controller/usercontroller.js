@@ -27,6 +27,8 @@ const razorpay = new Razorpay({
 // let signupdata;
 // let logindata;
 
+ 
+
 exports.getwishlistremoveprd = async (req, res) => {
     try {
         let productId = req.params.id;
@@ -291,6 +293,7 @@ exports.getuserprof = async(req,res) => {
 
 exports.getHomepage = async (req, res) => {
     try{
+       
         let user = await uscollec.findOne({email:req.session.user})
         if(req.session.user){
             res.render("landingpage",{
