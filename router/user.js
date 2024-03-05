@@ -5,7 +5,7 @@ const uscollec = require("../models/userconfig");
 const orderController = require("../controller/ordercontroller")
 const checkUserBlocked = require("../middleware/userauth");
 
-
+router.get("/", userController.getHomepage)
 router.get("/homepage", checkUserBlocked, userController.getHomepage);
 router.get("/homepage", userController.getHomepage);
 router.get("/login", userController.getLogin);

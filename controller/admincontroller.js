@@ -975,9 +975,11 @@ exports.postcategorylisting = async (req, res) => {
         let listing = req.body.listing;
         let category = req.params.category;
 
+       
+
         // Update all products with the specified category
         await prcollec.updateMany({ category: category }, { $set: { isListed: listing } });
-        await categorycollec.updateOne({name:category},{$set: {isListed: listing}});
+        await categorycollec.updateOne({ name: category }, { $set: { isListed: listing } });
         res.redirect("/admcategory");
     } catch (error) {
         console.error(error);
@@ -1040,12 +1042,24 @@ exports.postcategoryoffers = async(req,res)=>{
     }
 }
 
-exports.postnewcategory = (req,res)=>{
+exports.postnewcategory = async (req,res)=>{
     try{
-        const category = {
+         // Check if the category exists in the category collection
+         const existingCategory = await categorycollec.findOne({ name: req.body.categoryname });
+         if (existingCategory) {
+             console.log("Category already exists");
+             const category = await categorycollec.find({});
+             res.render("admin/admcategory",{
+             category,
+             success:"Category name already exists. Please enter another one!"
+
+      })
+             
+         }
+        const categoryname = {
             name:req.body.categoryname
         }
-        categorycollec.create(category)
+        categorycollec.create(categoryname)
         // prcollec.insertMany(category)
         .then(()=>{
             console.log(category+"is added into database");

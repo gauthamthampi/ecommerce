@@ -183,13 +183,14 @@
                                     <td>
                                         <!-- Button to change order status -->
                                         <form action="/admin/updateOrderStatus/<%= orderWithDetails.order._id %>" method="POST" class="d-flex">
-                                            <select name="newStatus" class="form-select me-2">
+                                            <select name="newStatus" class="form-select me-2" <%= (orderWithDetails.order.orderStatus === 'Cancelled' || orderWithDetails.order.orderStatus === 'Delivered') ? 'disabled' : '' %>>
                                                 <option value="Confirmed" <%= orderWithDetails.order.orderStatus === 'Confirmed' ? 'selected' : '' %>>Confirmed</option>
                                                 <option value="Cancelled" <%= orderWithDetails.order.orderStatus === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
                                                 <option value="Delivered" <%= orderWithDetails.order.orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
                                             </select>
                                             <button type="submit" class="btn btn-primary">Update Status</button>
                                         </form>
+                                        
                                     </td>
                                 </tr>
                             <% }); %>

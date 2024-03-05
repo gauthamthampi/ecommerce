@@ -815,6 +815,10 @@ exports.getMens = async (req, res) => {
             if (req.query.colour) {
                 query.colour = req.query.colour;
             }
+
+            if (req.query.brand) {
+                query.brand = req.query.brand;
+            }
     
             // Apply dial shape filter
             if (req.query.dialshape) {
@@ -901,6 +905,10 @@ exports.getWomens= async(req, res) => {
             query.colour = req.query.colour;
         }
 
+        if (req.query.brand) {
+            query.brand = req.query.brand;
+        }
+
         // Apply dial shape filter
         if (req.query.dialshape) {
             query.dialshape = req.query.dialshape;
@@ -935,12 +943,14 @@ exports.getWomens= async(req, res) => {
         const totalPages = Math.ceil(totalProducts / perPage);
         const skip = (page - 1) * perPage;
 
-        const products = await prcollec.find({category:"Women",isListed:"true"}).skip(skip).limit(perPage);
+        const products = await prcollec.find(query).skip(skip).limit(perPage);
+        const brands = await prcollec.distinct("brand")
 
         res.render('user/womens', {
             product: products,
             currentPage: page,
-            totalPages: totalPages
+            totalPages: totalPages,
+            brands:brands
         });
     } catch (err) {
         console.error(err);
@@ -959,6 +969,10 @@ exports.getSmart= async(req, res) => {
         // Apply color filter
         if (req.query.colour) {
             query.colour = req.query.colour;
+        }
+
+        if (req.query.brand) {
+            query.brand = req.query.brand;
         }
 
         // Apply dial shape filter
@@ -996,12 +1010,14 @@ exports.getSmart= async(req, res) => {
         const totalPages = Math.ceil(totalProducts / perPage);
         const skip = (page - 1) * perPage;
 
-        const products = await prcollec.find({category:"Smart",isListed:"true"}).skip(skip).limit(perPage);
+        const products = await prcollec.find(query).skip(skip).limit(perPage);
+        const brands = await prcollec.distinct("brand")
 
         res.render('user/smart', {
             product: products,
             currentPage: page,
-            totalPages: totalPages
+            totalPages: totalPages,
+            brands:brands
         });
     } catch (err) {
         console.error(err);
