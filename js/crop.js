@@ -8,23 +8,26 @@ let croppingBox = document.querySelector('.cropper110-cropping-box'),
     imgNames = null,
     imgSrc = null;
 
-fileInputs.forEach(fileInput => {
-    fileInput.addEventListener('change', () => {
-        let previewDiv = document.querySelector(fileInput.dataset.imagePreview)
-        previewDiv.innerHTML = ""
-        for (let each of fileInput.files) {
-            let imgSrc = URL.createObjectURL(each)
-            let img = document.createElement('img')
-            img.src = imgSrc
-            img.dataset.fileName = each.name
-            img.dataset.input = fileInput.id
-            img.addEventListener('click', cropImage)
-
-            previewDiv.append(img)
-
-        }
+    fileInputs.forEach(fileInput => {
+        fileInput.addEventListener('change', () => {
+            let previewDiv = document.querySelector(fileInput.dataset.imagePreview)
+            previewDiv.innerHTML = ""
+            for (let each of fileInput.files) {
+                let imgSrc = URL.createObjectURL(each)
+                let img = document.createElement('div')
+                img.classList.add('image-container')
+                img.innerHTML = `<img src="${imgSrc}" data-file-name="${each.name}" data-input="${fileInput.id}" class="previewImages">`
+                let closeBtn = document.createElement('button')
+                closeBtn.textContent = 'Delete'
+                closeBtn.addEventListener('click', () => {
+                    img.remove();
+                })
+                img.appendChild(closeBtn);
+                img.addEventListener('click', cropImage)
+                previewDiv.append(img)
+            }
+        })
     })
-})
 
 
 function cropImage(e) {

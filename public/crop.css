@@ -48,3 +48,22 @@ body{
 .cropper110-close{
     background-color: red;
 }
+
+.close-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
