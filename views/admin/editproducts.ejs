@@ -77,10 +77,6 @@
             <input type="text" class="form-control" id="floatingPassword" name="description" value="<%= product.description%>" required>
             <label for="floatingInput">Description</label>
           </div>
-          <div class="form-floating mb-3">
-            <input type="number" class="form-control" id="floatingPassword" name="rating" min="1" max="5" value="<%= product.rating%>" required>
-            <label for="floatingInput">Rating</label>
-          </div>
           <div class="form-floating  mb-3">
             <select class="form-select" id="floatingSelect" aria-label="Floating label select example" name="category" required value="<%= product.category%>">
               <option value="Men">Men</option>
@@ -134,6 +130,7 @@
                 <% } %>
             </div>
         </div>
+        <p id="successMessage" style="display: none; color: green;"></p>
 
           <div class="mb-3">
             <label for="formFileMultiple" class="form-label">Upload images</label>
@@ -152,17 +149,20 @@
             <label for="floatingSelect">Control the Visibility</label>
           </div>
           <div class="form-floating mb-3">
-            <input type="number" class="form-control" id="floatingPassword" name="price" min="1" value="<%= product.price%>"required>
+            <input type="number" class="form-control" id="floatingPassword" name="price" value="<%= product.price %>" required>
             <label for="floatingInput">Price</label>
           </div>
+          <p id="Perror" style="display: none; color: red;"></p>
           <div class="form-floating mb-3">
-            <input type="number" class="form-control" id="floatingPassword" name="stock" min="1" value="<%= product.stock%>" required>
+            <input type="number" class="form-control" id="floatingPassword" name="stock"  value="<%= product.stock %>" required>
             <label for="floatingInput">Stock Available</label>
           </div>
+          <p id="Serror" style="display: none; color: red;"></p>
           <div class="form-floating mb-3">
-            <input type="number" class="form-control" id="floatingPassword" name="offerprice" max="<%= product.price%>" value="<%= product.offerprice%>">
+            <input type="number" class="form-control" id="floatingPassword" name="offerprice"  max="<%= product.price%>" value="<%= product.offerprice%>">
             <label for="floatingInput">Offer Price</label>
           </div>
+          <p id="Oerror" style="display: none; color: red;"></p>
             
           <button type="submit" class="btn btn-primary" style="width: min-content;">Submit</button>
     </div>
@@ -173,25 +173,63 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js" integrity="sha512-9KkIqdfN7ipEW6B6k+Aq20PV31bjODg4AA52W+tYtAE0jE0kMx49bjJ3FgvS56wzmyfMUHbQ4Km2b7l9+Y/+Eg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- Script -->
     <script>
+       function validateInputs() {
+    const priceInput = document.getElementsByName('price')[0];
+    const stockInput = document.getElementsByName('stock')[0];
+    const offerInput = document.getElementsByName('offerprice')[0];
+    const price = parseInt(priceInput.value);
+    const stock = parseInt(stockInput.value);
+    const offer = parseInt(offerInput.value);
+    const PerrorElement = document.getElementById('Perror');
+    const SerrorElement = document.getElementById('Serror');
+    const OerrorElement = document.getElementById('Oerror');
+
+    // Check if both price and stock are greater than 0
+    if (price <= 0) {
+        PerrorElement.innerText = 'Price must be greater than 0';
+        PerrorElement.style.display = 'block';
+        return false;
+    } else {
+        PerrorElement.style.display = 'none';
+    }
+
+    if (stock < 0) {
+        SerrorElement.innerText = 'Stock must be greater than or equal 0';
+        SerrorElement.style.display = 'block';
+        return false;
+    } else {
+        SerrorElement.style.display = 'none';
+    }
+
+    if(offer < 0){
+      OerrorElement.innerText = 'Offer must be greater than or equal to 0';
+      OerrorElement.style.display = 'block';
+      return false;
+    }else{
+      OerrorElement.style.display = 'none';
+    }
+
+    return true;
+}
+
+// Add event listeners to the inputs to validate them on change
+document.getElementsByName('price')[0].addEventListener('change', validateInputs);
+document.getElementsByName('stock')[0].addEventListener('change', validateInputs);
+document.getElementsByName('offerprice')[0].addEventListener('change', validateInputs);
+
+document.querySelector('form').addEventListener('submit', function(event) {
+    if (!validateInputs()) {
+        event.preventDefault(); // Prevent form submission
+    }
+});
       // Array to store images temporarily
       let tempImages = [];
   
-      async function removeExistingImage(productId, imageUrl) {
-        // Remove image from product.image array
-        let index = tempImages.findIndex(item => item.src === imageUrl);
-        if (index !== -1) {
-            tempImages.splice(index, 1);
-        }
-
-        // Update the UI
-        const imageContainer = document.getElementById(imageUrl);
-        if (imageContainer) {
-            imageContainer.remove();
-        }
-
+        // Function to handle image deletion
+    async function removeExistingImage(productId, imageUrl) {
         try {
-            // Send a request to delete the image from the database
-            const response = await fetch(`/deleteImage/${productId}`, {
+            // Send a request to delete the image
+            const response = await fetch(`/deleteimage/${productId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -205,11 +243,24 @@
 
             const data = await response.json();
             console.log('Image deleted successfully:', data);
+
+            // Update the UI or show a success message
+            // For example, you can remove the deleted image from the UI
+            const deletedImage = document.getElementById(imageUrl);
+            if (deletedImage) {
+                deletedImage.remove();
+            }
+
+            // Show a success message
+            const successMessage = document.getElementById('successMessage');
+            if (successMessage) {
+                successMessage.innerText = 'Image deleted successfully';
+            }
         } catch (error) {
             console.error('Error deleting image:', error.message);
+            // Handle the error, such as showing an error message to the user
         }
     }
-    
 
 
     document.getElementById('imageInput').addEventListener('change', function (e) {

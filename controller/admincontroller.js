@@ -45,12 +45,12 @@ exports.addnewcoupon = async(req,res)=>{
     let day = String(expiryDate.getDate()).padStart(2, '0');
 
     let formattedExpiryDate = `${year}-${month}-${day}`;
-    console.log(formattedExpiryDate);
+    console.log(formattedExpiryDate); 
     let couponname = req.body.couponname.toUpperCase();
     let check = await couponcollec.findOne({name:couponname})
     if(check){
         let coupon = await couponcollec.find({})
-        res.render("admin/admcouponmanagement",{
+        res.render("admin/admcouponmanagement",{ 
             coupon,
             message:"Coupon already exists.Retry!"
     
@@ -88,7 +88,7 @@ exports.getadmincouponmanagement = async(req,res)=>{
 exports.getadmindashboard = async (req, res) => {
     try {
         const totalProducts = await prcollec.countDocuments({});
-        
+
         const totalGrossResult = await ordcollec.aggregate([
             {
                 $group: {
@@ -98,10 +98,57 @@ exports.getadmindashboard = async (req, res) => {
             },
         ]);
         const totalGross = totalGrossResult.length > 0 ? totalGrossResult[0].totalGross : 0;
-        
+
         const totalOrders = await ordcollec.countDocuments({});
-        
+
         const monthlySales = await ordcollec.aggregate([
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "items.productId",
+                    foreignField: "_id",
+                    as: "productInfo",
+                },
+            },
+            {
+                $unwind: "$productInfo",
+            },
+            {
+                $project: {
+                    month: { $month: "$dateoforder" },
+                    year: { $year: "$dateoforder" },
+                    totalPrice: 1,
+                    category: "$productInfo.category",
+                    productName: "$productInfo.name",
+                },
+            },
+        ]);
+
+        const menSales = Array(12).fill(0);
+        const womenSales = Array(12).fill(0);
+        const smartSales = Array(12).fill(0);
+
+        monthlySales.forEach((sale) => {
+            const monthIndex = sale.month - 1;
+            switch (sale.category) {
+                case "Men":
+                    menSales[monthIndex] += sale.totalPrice;
+                    break;
+                case "Women":
+                    womenSales[monthIndex] += sale.totalPrice;
+                    break;
+                case "Smart":
+                    smartSales[monthIndex] += sale.totalPrice;
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        const topMenProducts = await ordcollec.aggregate([
+            {
+                $unwind: "$items"
+            },
             {
                 $lookup: {
                     from: "products",
@@ -114,36 +161,118 @@ exports.getadmindashboard = async (req, res) => {
                 $unwind: "$productInfo"
             },
             {
+                $match: {
+                    "productInfo.category": "Men"
+                }
+            },
+            {
+                $group: {
+                    _id: "$items.productId",
+                    totalQuantity: { $sum: "$items.quantity" },
+                    productName: { $first: "$productInfo.modelname" }
+                }
+            },
+            {
+                $sort: { totalQuantity: -1 }
+            },
+            {
+                $limit: 5
+            },
+            {
                 $project: {
-                    month: { $month: "$dateoforder" },
-                    year: { $year: "$dateoforder" },
-                    totalPrice: 1,
-                    category: "$productInfo.category"
+                    _id: 0,
+                    productName: 1,
+                    totalQuantity: 1
+                }
+            }
+        ]);
+        topMenProducts.forEach(product => {
+            console.log(product);
+        });
+        const topWomenProducts = await ordcollec.aggregate([
+            {
+                $unwind: "$items"
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "items.productId",
+                    foreignField: "_id",
+                    as: "productInfo"
+                }
+            },
+            {
+                $unwind: "$productInfo"
+            },
+            {
+                $match: {
+                    "productInfo.category": "Women"
+                }
+            },
+            {
+                $group: {
+                    _id: "$items.productId",
+                    totalQuantity: { $sum: "$items.quantity" },
+                    productName: { $first: "$productInfo.modelname" }
+                }
+            },
+            {
+                $sort: { totalQuantity: -1 }
+            },
+            {
+                $limit: 5
+            },
+            {
+                $project: {
+                    _id: 0,
+                    productName: 1,
+                    totalQuantity: 1
                 }
             }
         ]);
 
-        const menSales = Array(12).fill(0);
-        const womenSales = Array(12).fill(0);
-        const smartSales = Array(12).fill(0);
-
-        monthlySales.forEach(sale => {
-            const monthIndex = sale.month - 1;
-            switch (sale.category) {
-                case 'Men':
-                    menSales[monthIndex] += sale.totalPrice;
-                    break;
-                case 'Women':
-                    womenSales[monthIndex] += sale.totalPrice;
-                    break;
-                case 'Smart':
-                    smartSales[monthIndex] += sale.totalPrice;
-                    break;
-                default:
-                    break;
+        const topSmartProducts = await ordcollec.aggregate([
+            {
+                $unwind: "$items"
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "items.productId",
+                    foreignField: "_id",
+                    as: "productInfo"
+                }
+            },
+            {
+                $unwind: "$productInfo"
+            },
+            {
+                $match: {
+                    "productInfo.category": "Smart"
+                }
+            },
+            {
+                $group: {
+                    _id: "$items.productId",
+                    totalQuantity: { $sum: "$items.quantity" },
+                    productName: { $first: "$productInfo.modelname" }
+                }
+            },
+            {
+                $sort: { totalQuantity: -1 }
+            },
+            {
+                $limit: 5
+            },
+            {
+                $project: {
+                    _id: 0,
+                    productName: 1,
+                    totalQuantity: 1
+                }
             }
-        });
-
+        ]);
+        
         res.render("admin/admindashboard", {
             totalProducts: totalProducts,
             totalGross: totalGross,
@@ -151,12 +280,16 @@ exports.getadmindashboard = async (req, res) => {
             menSales: menSales,
             womenSales: womenSales,
             smartSales: smartSales,
+            topMenProducts: topMenProducts,
+            topWomenProducts: topWomenProducts,
+            topSmartProducts: topSmartProducts,
         });
     } catch (error) {
         console.log("Error fetching dashboard data:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
 
 
 exports.getmonthlysales = async (req,res) =>{
@@ -400,6 +533,10 @@ exports.postupdateOrderStatus = async(req,res)=>{
          const order = await ordcollec.findById(orderId);
     
          order.orderStatus = newStatus;
+         order.items.forEach(item => {
+            item.prostatus = newStatus;
+        });
+         
     
          await order.save();
     
@@ -681,6 +818,7 @@ exports.postdeleteimage = async (req, res) => {
         // You can also delete the image file from your server if needed
 
         res.json({ success: true, message: 'Image deleted successfully' });
+        // res.redirect(`/editproduct/${productId}`);
     } catch (error) {
         console.error('Error deleting image:', error.message);
         res.status(500).json({ success: false, message: 'Internal Server Error' });

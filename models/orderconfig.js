@@ -20,6 +20,10 @@ const orderitemSchema = new mongoose.Schema({
     price:{
         type:Number
     },
+    rated:{
+        type:Boolean,
+        default:false
+    }
 })
 const orderSchema = new mongoose.Schema({
     userId:{

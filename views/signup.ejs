@@ -33,11 +33,6 @@
                         <div id="emailError" class="alert alert-danger text-center" role="alert"
                             style="display: none;">Please enter a valid email address.</div>
                     </div>
-                    <% if(locals.incorrectmail){ %>
-                    <div class="alert alert-danger text-center" role="alert">
-                        <%= incorrectmail %>
-                    </div>
-                    <% } %>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
                         <input type="password" class="form-control" id="password" name="password" required>
@@ -45,11 +40,15 @@
                     <div class="mb-3">
                         <label for="cnfpassword" class="form-label">Confirm Password</label>
                         <input type="password" class="form-control" id="cnfpassword" name="cnfpassword" required>
+                        <div id="passwordError" class="alert alert-danger text-center" role="alert"
+                            style="display: none;">Passwords do not match.</div>
                     </div>
                     <div class="mb-3">
                         <label for="referalcode" class="form-label">Referal Code(optional)</label>
                         <input type="text" class="form-control" id="referalcode" name="referalcode">
                     </div>
+                    <div id="refError" class="alert alert-danger text-center" role="alert"
+                        style="display: none;"></div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary w-100">Sign up</button>
                     </div>
@@ -72,42 +71,42 @@
             var secondnameInput = document.getElementById('secondname').value;
             var referalcodeInput = document.getElementById('referalcode').value;
             var spaceError = document.getElementById('spaceError');
-    
+            var passwordInput = document.getElementById('password').value;
+            var cnfpasswordInput = document.getElementById('cnfpassword').value;
+            var passwordError = document.getElementById('passwordError');
+            var emailInput = document.getElementById('email').value;
+            var emailError = document.getElementById('emailError');
+
             // Regular expression to check for spaces
             var spaceRegex = /\s/;
-    
+
             // Check for spaces in first name and last name
             if (spaceRegex.test(firstnameInput) || spaceRegex.test(secondnameInput)) {
                 spaceError.style.display = 'block';
                 spaceError.innerText = 'First name and last name cannot contain spaces.';
                 return false;
             }
-    
+
             // Check for spaces in referal code
             if (spaceRegex.test(referalcodeInput)) {
-                spaceError.style.display = 'block';
-                spaceError.innerText = 'Referal code cannot contain spaces.';
+                refError.style.display = 'block';
+                refError.innerText = 'Referal code cannot contain spaces.';
                 return false;
             }
-    
-            return true;
-        }
-    
-        function validateEmail() {
-            var emailInput = document.getElementById('email').value;
-            var emailError = document.getElementById('emailError');
-    
-            // Regular expression to validate email format
+
+            // Validate email format
             var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
             if (!emailRegex.test(emailInput)) {
-                // Display error message and prevent form submission
                 emailError.style.display = 'block';
                 return false;
             }
-    
-            // Hide error message and allow form submission
-            emailError.style.display = 'none';
+
+            // Check if passwords match
+            if (passwordInput !== cnfpasswordInput) {
+                passwordError.style.display = 'block';
+                return false;
+            }
+
             return true;
         }
     </script>

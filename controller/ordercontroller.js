@@ -254,6 +254,11 @@ exports.postvieworder = async (req, res) => {
         // console.log("user"+user)
         // Find the canceled order
         const order = await ordcollec.findById(orderId);
+        order.items.forEach(item => {
+            item.prostatus = 'Cancelled';
+        });
+
+        await order.save();
         // console.log("order"+order);
         if(order.paymentMethod==="Online Payment" || order.paymentMethod==="Wallet"){
           user.wallet += order.totalPrice;
@@ -301,8 +306,7 @@ exports.cancelsinglepro = async (req, res) => {
     try {
         let productId = req.params.productId;
         let orderId = req.params.orderId; // Assuming you have orderId in your request parameters
-        // console.log(productId);
-        // console.log(orderId);
+        
 
         const product = await prcollec.findById(productId);
         if (!product) {
@@ -982,7 +986,8 @@ exports.getvieworder = async (req, res) => {
                             colour: product.colour,
                             quantity: item.quantity,
                             price: product.price,
-                            prostatus: item.prostatus
+                            prostatus: item.prostatus,
+                            rated:item.rated
                             // Add more details as needed
                         });
                     }

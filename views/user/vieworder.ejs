@@ -10,6 +10,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Allura&family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
 integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<style>
+  #rating-container {
+  margin-top: 20px;
+}
+
+.rating-box {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ccc;
+  margin-right: 5px;
+  text-align: center;
+  line-height: 40px;
+  cursor: pointer;
+}
+
+.rating-box.active {
+  background-color: #ffcc00;
+}
+
+</style>
 </head>
 <body style="background-color: #dedcdc; margin: 0; padding: 0;">
 
@@ -76,10 +97,14 @@ integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2
             <% }); %>
         <% } else if (allDelivered) { %>
             <% order.orderStatus = 'Delivered'; %>
+            <% order.items.forEach(item => { %>
+              <% item.prostatus = 'Delivered'; %>
+          <% }); %>
         <% } %>
       
             <div class="order-container mb-4 p-4 border rounded">
                 <h2>Order Details</h2>
+                <p><strong>Order Id: </strong><%= order.id.toString().slice(-4) %></p>
                 <p>
                     <strong>Status:</strong>
                     <% if (order.orderStatus === 'Confirmed') { %>
@@ -96,8 +121,6 @@ integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2
                 <p><strong>Date of Order:</strong> <%= order.dateoforder %></p>
                 <p><strong>Coupon:</strong> <%= order.coupon !== undefined && order.coupon !== "" ? order.coupon : "No coupon applied" %></p>
                
-
-
                 <h3 class="mt-3">Shipping Address</h3>
                 <table class="table">
                     <thead>
@@ -145,15 +168,50 @@ integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2
                                     <td><%= item.quantity %></td>
                                     <td><%= item.prostatus %></td>
                                     <td>₹<%= item.price.toLocaleString('en-IN') %>.00</td>
+                                    <td>
                                     <% if (item.prostatus !== 'Cancelled' && item.prostatus !== 'Delivered' && order.orderStatus !== 'Cancelled' && order.orderStatus !== 'Delivered') { %>
-                                      <td>
+                                      
                                         <form id="cancelProductForm_<%= item.productId %>" method="post" action="/user/orders/cancel-singleproduct/<%= item.productId %>/<%= order.id %>">
                                             <button type="button" class="btn btn-danger cancel-product-btn" data-product-id="<%= item.productId %>" data-order-id="<%= order.id %>">Cancel Product</button>                                       
                                         </form>
+                                        <% } %>
+                                    <% if (item.prostatus === 'Delivered' && item.rated===false) { %>
+                                          <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                            Submit Rating
+                                           </button>
+                                        <% } %>
+                                        
+                                        
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                          <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                              <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Submit Rating</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                              </div>
+
+                                              <div class="modal-body justify-content-center">
+                                                <div id="rating-container">
+                                                  <div class="rating-box" data-rating="1">1</div>
+                                                  <div class="rating-box" data-rating="2">2</div>
+                                                  <div class="rating-box" data-rating="3">3</div>
+                                                  <div class="rating-box" data-rating="4">4</div>
+                                                  <div class="rating-box" data-rating="5">5</div>
+                                                </div>
+                                              </div>
+
+                                              <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-primary submit-rating" data-product-id="<%= item.productId %>" data-order-id="<%= order.id %>">Submit Rating</button>
+
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>                                       
                                       </td>
-                                    <% } %>
                                   </tr>
-                                  <% }) %>
+                                  <% }) %> 
                         </tbody>
                     </table>
                 </div>
@@ -236,9 +294,58 @@ integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2
         </div>
       </footer>
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>  
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script> 
     <script>
-      document.addEventListener("DOMContentLoaded", function() {
+      let selectedRating = null;
+     
+      // var orderId = $('#orderId').val();
+  $('.rating-box').click(function() {
+  $('.rating-box').removeClass('active');
+  $(this).addClass('active');
+  // Get the product ID from the data attribute
+  const productId = $(this).data('product-id');
+  // Update selectedRating with the rating value
+  selectedRating = $(this).data('rating');
+   
+});
+
+$('.submit-rating').click(function() {
+    const productId = $(this).data('product-id');
+    if (selectedRating === null) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please select a rating',
+        });
+        return;
+    }
+    const orderId = $(this).data('order-id');
+    // Send the rating value to the server using AJAX
+    $.ajax({
+        url: `/products/${productId}/ratings`,
+        type: 'POST',
+        data: { rating: selectedRating, orderId: orderId }, // Include orderId in the data
+        success: function(response) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Rating submitted successfully',
+            });
+
+        },
+        error: function(xhr, status, error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Error submitting rating',
+            });
+            console.error('Error submitting rating:', error);
+        }
+    });
+});
+
+    document.addEventListener("DOMContentLoaded", function() {
     // Add event listener to all cancel order buttons
     const cancelOrderButtons = document.querySelectorAll('.cancel-order-btn');
     cancelOrderButtons.forEach(button => {

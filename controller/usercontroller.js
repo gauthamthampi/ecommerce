@@ -27,8 +27,31 @@ const razorpay = new Razorpay({
 // let signupdata;
 // let logindata;
 
- 
-
+exports.submitrating = async (req,res) => {
+    try{
+        let orderId = req.body.orderId;
+        console.log(orderId);
+        // let order = await ordcollec.findOne(orderId);
+        let rating = req.body.rating;
+        let productId = req.params.productId;
+        console.log("rat"+rating+"prod"+productId);
+        let product = await prcollec.findById(productId);
+            if(product){
+                product.rating.push(rating); // Push new rating into array
+                await product.save();
+                console.log("Pushed rating");
+            }
+                  await ordcollec.updateOne(
+                { _id: orderId, 'items.productId': productId },
+                { $set: { 'items.$.rated': true } })
+        res.redirect("/homepage")
+    
+    }catch(err){
+        console.error(err);
+        res.redirect("/error");
+    }
+}
+   
 exports.getwishlistremoveprd = async (req, res) => {
     try {
         let productId = req.params.id;
@@ -372,17 +395,16 @@ exports.getforgotpass = (req,res)=>{
         res.redirect("/error");
     }
 }
-// let emailforgotpass;
+
 exports.postforgotpass = async(req,res)=>{
     try{
         const mail = {
             email:req.body.email
         }
          req.session.mail = mail.email;
-        //  let emailforgotpass = mail.email;
-    
+      
         const user = await usercollec.findOne({email:mail.email});
-        // console.log(user);
+  
         if(user){
             res.redirect("/forgotpassotp")
            
@@ -829,11 +851,13 @@ exports.getMens = async (req, res) => {
             const skip = (page - 1) * perPage;
     
             const products = await prcollec.find(query).skip(skip).limit(perPage);
+            const brands = await prcollec.distinct("brand")
     
             res.render('user/mens', {
                 product: products,
                 currentPage: page,
                 totalPages: totalPages,
+                brands:brands
             });
         } catch (err) {
             console.error(err);
@@ -842,17 +866,23 @@ exports.getMens = async (req, res) => {
     };
 
 
-exports.getMensPreview = (req, res) => {
+exports.getMensPreview = async(req, res) => {
     try{
         let id = req.params.id;
+        let product =  await prcollec.findById(id)
+        console.log("pr"+product);
+        const ratings = product.rating;
+        const totalRatings = ratings.length;
+        const sumRatings = ratings.reduce((acc, rating) => acc + rating, 0);
+        const averageRating = totalRatings > 0 ? sumRatings / totalRatings : 0;
         prcollec.findById(id)
         .then(product=>{
             res.render("user/productpage",{
-                product:product
+                product:product,
+                averageRating
                 
             });
         })
-
     }catch (err) {
         console.error(err);
         res.redirect("/error");

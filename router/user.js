@@ -53,6 +53,7 @@ router.get('/user/orderconfirm/:id', checkUserBlocked,orderController.renderOrde
 router.get('/download/invoice/:orderId', checkUserBlocked,orderController.downloadInvoice);
 router.get("/user/vieworder",checkUserBlocked,orderController.getvieworder)
 router.post("/user/vieworder/:id",checkUserBlocked,orderController.postvieworder)
+router.post('/products/:productId/ratings',checkUserBlocked,userController.submitrating)
 router.post('/user/orders/cancel-singleproduct/:productId/:orderId', checkUserBlocked,orderController.cancelsinglepro);
 router.post("/cart/selectcoupon/:id", checkUserBlocked,orderController.selectcoupon)
 router.get("/removecoupon/:id",checkUserBlocked,orderController.removecoupon);

@@ -83,7 +83,21 @@
           <% } else {%>
             <div class="fw-lighter"> <h5>Availability : <%= product.stock %> left</h5> </div>
             <% } %>
-         
+            <% if (averageRating===1) { %>
+              <div> <h5>Rating :⭐</h5></div>
+            <% }else if(averageRating===2){ %>
+              <div> <h5>Rating :⭐⭐</h5></div>
+              <% }else if(averageRating===3){ %>
+                <div> <h5>Rating :⭐⭐⭐</h5></div>
+                <% } else if(averageRating===4){ %>
+                  <div> <h5>Rating :⭐⭐⭐⭐</h5></div>
+                  <% } else if(averageRating===0){ %>
+                    <div> <h5>Rating : ⭐⭐</h5></div>
+                    <% } else{ %>
+                      <div> <h5>Rating :⭐⭐⭐⭐⭐</h5></div>
+                      <% } %>
+              
+          
           <% if (product.offerprice>0) { %>
             <div class="border-bottom"> <h4>Price : <strike>₹<%= product.price %></strike>&nbsp;<span style="color: green;">₹<%= product.offerprice%>(Offer price)</span></h4></div>
           <% } else { %>

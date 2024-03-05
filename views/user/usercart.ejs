@@ -107,7 +107,7 @@
                                             <span class="input-group-text">Quantity</span>
                                             <form method="post" action="/user/user_cart/quantityupdated/<%=product.productDetails._id%>">
                                                 <div class="input-group">
-                                                    <input type="number" step="1" min="1" max="<%= product.productDetails.stock %>" value="<%= product.quantity %>" class="form-control quantity-input" name="quantity" oninput="toggleButtonVisibility(this)">
+                                                    <input type="number" step="1" min="1" max="<%= product.productDetails.stock %>" value="<%= product.quantity %>" class="form-control quantity-input" name="quantity" oninput="toggleButtonVisibility(this)" required>
                                                     <button type="submit" class="btn btn-success confirm-button" style="display: none;">Confirm</button>
                                                 </div>
                                             </form>

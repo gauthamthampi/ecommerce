@@ -83,11 +83,26 @@
             <div class="mb-3">
                 <label for="color" class="form-label">Color:</label>
                 <select class="form-select" name="colour" id="color">
+                  <option value="" selected disabled>Select Colour</option>
                     <option value="Black">Black</option>
                     <option value="Blue">Blue</option>
-                   
+                    <option value="Brown">Brown</option>
+                    <option value="Silver">Silver</option>
+                    <option value="Gold">Gold</option>
+                    <option value="White">White</option>
                 </select>
             </div>
+
+            <div class="mb-3">
+              <label for="color" class="form-label">Brand:</label>
+              <select class="form-select" name="brand" id="brand">
+                <option value="" selected disabled>Select Brand</option>
+                <% brands.forEach((brand) => { %>
+                  <option value="<%= brand %>"><%= brand %></option>
+                  <% }) %>
+                  
+              </select>
+          </div>
             
             <div class="mb-3">
               <label for="dialShape" class="form-label">Dial Shape:</label>
@@ -95,17 +110,18 @@
                   <option value="" selected disabled>Select Dial Shape</option>
                   <option value="Round">Round</option>
                   <option value="Square">Square</option>
+                  <option value="Square">Rectangle</option>
                  
               </select>
           </div>
             <div class="mb-3">
                 <label for="minPrice" class="form-label" >Min Price:</label>
-                <input type="number" class="form-control" name="minPrice" value="1000" placeholder="Min Price">
+                <input type="number" class="form-control" name="minPrice" min="1"  placeholder="Min Price">
             </div>
     
             <div class="mb-3">
                 <label for="maxPrice" class="form-label">Max Price:</label>
-                <input type="number" class="form-control" name="maxPrice" value="5000" placeholder="Max Price">
+                <input type="number" class="form-control" name="maxPrice" min="1" placeholder="Max Price">
             </div>
     
             <div class="mb-3">
@@ -113,7 +129,10 @@
                 <select class="form-select" name="strapmaterial" id="strapMaterial">
                   <option value="" selected disabled>Select Strap Material</option>  
                   <option value="Leather">Leather</option>
-                    <option value="Stainless Steel">Stainless Steel</option>
+                  <option value="Stainless Steel">Stainless Steel</option>
+                  <option value="Silicone">Silicone</option>
+                  <option value="Ceramic">Ceramic</option>
+                  <option value="Rubber">Rubber</option>
                     
                 </select>
             </div>

@@ -55,7 +55,7 @@
         <div class="alert alert-success" role="alert">
             <h4 class="alert-heading">Order Confirmed!</h4>
             <p>Your order has been successfully confirmed. Thank you for shopping with us!</p>
-            <p>Your order ID:<%= order._id %></p>
+            <p>Your order ID:<%= order._id.toString().slice(-4) %></p>
             <a href="/homepage"><p>CONTINUE SHOPPING</p></a>
             <a href="<%= invoiceDownloadUrl %>">Download Invoice</a>
         </div>
