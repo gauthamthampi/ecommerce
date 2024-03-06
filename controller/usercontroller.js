@@ -37,7 +37,7 @@ exports.submitrating = async (req,res) => {
         console.log("rat"+rating+"prod"+productId);
         let product = await prcollec.findById(productId);
             if(product){
-                product.rating.push(rating); // Push new rating into array
+                product.prodrating.push(rating); // Push new rating into array
                 await product.save();
                 console.log("Pushed rating");
             }
@@ -875,7 +875,7 @@ exports.getMensPreview = async(req, res) => {
         let id = req.params.id;
         let product =  await prcollec.findById(id)
         console.log("pr"+product);
-        const ratings = product.rating;
+        const ratings = product.prodrating;
         const totalRatings = ratings.length;
         const sumRatings = ratings.reduce((acc, rating) => acc + rating, 0);
         const averageRating = totalRatings > 0 ? sumRatings / totalRatings : 0;

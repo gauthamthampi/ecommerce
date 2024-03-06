@@ -39,6 +39,9 @@ const productschema = new mongoose.Schema({
     rating:[{
         type: Number
     }],
+    prodrating:[{
+        type: Number
+    }],
     isListed:{
         type: String,
         default:"true"
