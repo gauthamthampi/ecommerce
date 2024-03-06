@@ -168,11 +168,13 @@
                   </div>
                   <div class="row p-3 m-1" style="background-color:rgb(226, 226, 226)">
                     <p class="border-bottom">Available Coupons</p>
-                    <% if (coupons && coupons.length > 0 && userCart.coupon === "Not applied") { %>
-                      <form id="couponForm" method="post" action="/cart/selectcoupon/<%= userCart._id %>">
+                    <% if (coupons && coupons.length > 0 && userCart.coupon === "Not applied" ) { %>
+
+                     
+                        <form id="couponForm" method="post" action="/cart/selectcoupon/<%= userCart._id %>">
                           <% coupons.forEach(coupon => { %>
                               <div class="form-check bg-white my-2">
-                                  <input class="form-check-input" type="radio" name="flexRadioDefault" value="<%=coupon.name%>">
+                                  <input class="form-check-input" type="radio" name="flexRadioDefault" value="<%=coupon.name%>" required>
                                   <label class="form-check-label">
                                       <%= coupon.name %>
                                   </label><br>
@@ -181,6 +183,9 @@
                           <% }); %>
                           <button type="submit" class="btn btn-success">Apply Coupon</button>
                       </form>
+                     
+                    
+
                   <% } else if(userCart.coupon === "Applied") { %>
                       <a href="/removecoupon/<%= userCart._id %>"><button class="btn btn-danger">Remove Coupon</button></a>
                   <% } else { %>

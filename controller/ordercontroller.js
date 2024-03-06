@@ -407,6 +407,14 @@ exports.getorderconfirm = async(req, res) => {
             quantity: item.quantity,
             prostatus: "Confirmed" // Set prostatus to "Confirmed"
         })); 
+
+        for (const item of updatedItems) {
+            const product = await prcollec.findById(item.productId);
+            if (!product || product.stock < item.quantity) {
+                return res.status(400).json({ message: 'Product not available' });
+            }
+        }
+
         
         if (paymentMethod === 'Wallet') {
             // Calculate the remaining wallet balance after deducting the total price
