@@ -59,31 +59,30 @@ exports.getwishlistremoveprd = async (req, res) => {
         let userId = user._id; // Assuming req.user contains the user's ID
         await wishlistcollec.updateOne(
             { userId: userId },
-            { $pull: { products: { productId: productId } } }
+            { $pull: { products: { productId: { $eq: productId } } } }
         );
-        res.redirect("/viewwishlist/:id");
+        res.redirect('/viewwishlist');
     } catch (err) {
         console.error(err);
         res.redirect("/error");
     }
-};
+}
 
-
-exports.getwishlistremoveprd = async (req, res) => {
-    try{
-        let productId = req.params.id;
-        let user = await uscollec.findOne({email:req.session.user})
-        let userId = user._id; // Assuming req.user contains the user's ID
-        await wishlistcollec.updateOne(
-            { userId: userId },
-            { $pull: { products: { productId: productId } } }
-        );
-        res.redirect("/viewwishlist/:id");
-    }catch (err) {
-        console.error(err);
-        res.redirect("/error");
-    }
-};
+// exports.getwishlistremoveprd = async (req, res) => {
+//     try{
+//         let productId = req.params.id;
+//         let user = await uscollec.findOne({email:req.session.user})
+//         let userId = user._id; // Assuming req.user contains the user's ID
+//         await wishlistcollec.updateOne(
+//             { userId: userId },
+//             { $pull: { products: { productId: productId } } }
+//         );
+//         res.redirect("/viewwishlist/:id");
+//     }catch (err) {
+//         console.error(err);
+//         res.redirect("/error");
+//     }
+// };
 
 exports.getviewishlist= async(req,res)=>{
     try{
